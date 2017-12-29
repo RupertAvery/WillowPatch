@@ -1,0 +1,5 @@
+build/*
+willow.nes
+src/willow.bin
+src/willow.lst
+src/willow.sym

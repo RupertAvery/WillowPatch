@@ -1,0 +1,20 @@
+@ECHO OFF
+
+SET BINPATH=bin
+SET SRCPATH=src
+SET BUILDPATH=build
+
+SET SOURCE=willow.asm
+SET IPS_OUT=willow.bin
+SET ROM=willow.nes
+SET ASSEMBLER=x816.exe
+SET LINK_OPTS=-l -d -$
+SET IPS=ips.exe
+
+MD %BUILDPATH%
+CD %SRCPATH% 
+%ASSEMBLER% %LINK_OPTS% %SOURCE%
+CD ..
+COPY willow.nes %BUILDPATH%\%ROM%
+COPY %SRCPATH%\%IPS_OUT% %BUILDPATH%\willow.ips
+%IPS% %BUILDPATH%\%ROM% %BUILDPATH%\willow.ips

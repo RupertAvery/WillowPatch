@@ -1,0 +1,205 @@
+LOCATION_OFFSETS:
+.db LOCATION_0 - LOCATION_0
+.db LOCATION_1 - LOCATION_0
+.db LOCATION_2 - LOCATION_0
+.db LOCATION_3 - LOCATION_0
+.db LOCATION_4 - LOCATION_0
+.db LOCATION_5 - LOCATION_0
+.db LOCATION_6 - LOCATION_0
+.db LOCATION_7 - LOCATION_0
+.db LOCATION_8 - LOCATION_0
+.db LOCATION_9 - LOCATION_0
+.db LOCATION_A - LOCATION_0
+.db LOCATION_B - LOCATION_0
+.db LOCATION_C - LOCATION_0
+.db LOCATION_D - LOCATION_0
+.db LOCATION_E - LOCATION_0
+.db LOCATION_F - LOCATION_0
+LOCATION_0:
+.db $11
+.asc "VILLAGE OF NELWYN"
+LOCATION_1:
+.db $0F
+.asc "NELWYN DEW PATH"
+LOCATION_2:
+.db $0E
+.asc "VILLAGE OF DEW"
+LOCATION_3:
+.db $10
+.asc "BOGARDA'S FOREST"
+LOCATION_4:
+.db $0E
+.asc "BOGARDA'S CAVE"
+LOCATION_5:
+.db $0C
+.asc "DEW HILLSIDE"
+LOCATION_6:
+.db $0C
+.asc "DEATH FOREST"
+LOCATION_7:
+.db $0E
+.asc "MATANDA'S CAVE"
+LOCATION_8:
+.db $0A
+.asc "LAKE CHEEF"
+LOCATION_9:
+.db $0D
+.asc "MOUNTAIN PASS"
+LOCATION_A:
+.db $09
+.asc "LAKE CAVE"
+LOCATION_B:
+.db $0C
+.asc "SACRED TOWER"
+LOCATION_C:
+.db $0D
+.asc "MOUNTAIN CAVE"
+LOCATION_D:
+.db $0A
+.asc "TIR ASLEEN"
+LOCATION_E:
+.db $11
+.asc "TIR ASLEEN CASTLE"
+LOCATION_F:
+.db $08
+.asc "NOCKMAAR"
+
+WRITE_LOCATION_NAME:
+
+LDY #$02
+LDA ($0A),Y
+STA $0F
+INY
+LDA ($0A),Y
+STA $0D
+
+JSR GET_LOCATION_NAME_INDEX
+TAY
+LDA LOCATION_OFFSETS,Y
+TAY
+LDA LOCATION_0,Y
+STA $0C
+
+LDX #$00
+LDA $09
+STA $0640,X
+INX
+LDA #$25
+STA $0640,X
+INX
+
+LDA $0C
+STA $0640,X
+-
+INY
+INX
+LDA LOCATION_0,Y
+STA $0640,X
+DEC $0C
+BPL -
+INX
+LDA #$FF
+STA $0640,X
+
+LDA #$40
+STA $33
+LDA #$06
+STA $34
+JSR $C32F
+
+RTS
+
+GET_LOCATION_NAME_INDEX:
+LDA #<LOCATION_MAPPING
+STA $00		
+LDA #>LOCATION_MAPPING
+STA $01		; clear $01
+
+LDA $0F		; map X
+LSR 		; / 2
+STA $F2		; $F2 = map X / 2
+
+LDA #$00
+STA $F3		
+
+CLC
+LDA $0D		; map Y
+ASL
+ROL $F3
+ASL
+ROL $F3
+ASL
+ROL $F3
+ASL
+ROL $F3
+
+;A = lower nybble * $10
+
+ADC $F2
+STA $F2
+
+CLC
+LDA $F2
+ADC $00
+STA $00
+LDA $F3
+ADC $01
+STA $01
+
+PAUSE:
+LDY #00
+LDA ($00),Y
+
+PHA
+
+LDA $0F		; map X
+LSR 		; / 2
+BCC +
+PLA 
+and #$0F
+RTS
++
+PLA
+LSR
+LSR
+LSR
+LSR
+RTS
+
+
+LOCATION_MAPPING:
+; B62A 
+;    01  23  45  67  89  AB  CD  EF  01  23  45  67  89  AB  CD  EF
+.db $00,$30,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 00
+; B63A 
+.db $00,$33,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 01
+.db $00,$03,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 02
+.db $00,$03,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 03
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 04
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 05
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 06
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 07
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 08
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 09
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 0A
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 0B
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 0C
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 0D
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 0E
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 0F
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 10
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 11
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 12
+.db $00,$00,$00,$00,$00,$02,$22,$22,$10,$00,$00,$00,$00,$00,$00,$00	; 13
+.db $00,$00,$00,$00,$00,$02,$22,$22,$11,$00,$00,$00,$00,$00,$00,$00	; 14
+.db $00,$00,$00,$00,$00,$32,$22,$22,$21,$00,$00,$00,$00,$00,$00,$00	; 15
+.db $00,$00,$03,$33,$33,$32,$22,$22,$11,$00,$00,$00,$00,$00,$00,$00	; 16
+.db $00,$00,$00,$03,$33,$30,$01,$11,$11,$00,$00,$00,$00,$00,$00,$00	; 17
+.db $00,$00,$00,$00,$00,$00,$00,$11,$10,$00,$00,$00,$00,$00,$00,$00	; 18
+.db $00,$00,$00,$00,$00,$00,$00,$10,$00,$00,$00,$00,$00,$00,$00,$00	; 19
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 1A
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 1B
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 1C
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 1D
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 1E
+.db $00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00,$00	; 1F

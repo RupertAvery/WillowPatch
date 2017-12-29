@@ -1,0 +1,103 @@
+INGAME_JOYSTICK_LOOP:
+LDA $27
+and #$20
+BNE PRESSEDSELECT
+LDA $27
+AND #$0F
+BNE JUMP811A
+BIT $29
+BVS JUMP8114
+BMI JUMP8140
+LDA $C0
+ORA #$08
+STA $C0
+LDA #$01
+STA $C5
+LDA #$00
+STA $C6
+RTS 
+JUMP811A:
+JMP $811A	; Pressed D-Pad
+JUMP8114:
+JMP $8114	; Pressed START, A
+JUMP8140:
+JMP $8140	; Pressed B
+
+PRESSEDSELECT:
+;SAVE GAME POS
+LDA $27
+AND #$0F
+BNE CANCEL
+BIT $29
+BVS CANCEL
+BMI SAVE_GAME
+CANCEL:
+rts
+
+SAVE_GAME:
+LDA $55
+cmp #$01  ; Check if enemy flag is set
+BNE DO_SAVE
+
+LDA #$2B	;Can't save!
+JSR $C4AD
+LDA #$3F
+JSR $C13F	;Play failed sound
+
+rts
+
+DO_SAVE:
+LDA $2F
+STA $1A
+LDA $2E
+STA $1B
+
+
+JSR SAVEGAME_LOOP_NO_SONG
+
+BCS +
+
+LDA $1A
+STA $2F
+LDA $1B
+STA $2E
+
+JSR SAVE_SAVEGAME
++
+JSR $C153	; hide screen
+JSR $C12D
+
+LDA $1A
+JSR $C6B0	; Set palette (BG)
+;LDA $1B
+;JSR $C6B2	; Set palette 2 (Sprite/BG?)
+
+JSR $DEF3	; Redraw map with last coordinates
+JSR $C12D
+
+LDA $53
+JSR $C1DB	; set tileset
+
+JSR $C1BB	; set willow sprite
+JSR $C6AE	
+
+LDA $50
+LSR 
+LSR 
+LSR 
+LSR 
+CLC 
+ADC #$10
+JSR $C6B2	; Set palette 2 (Sprite/BG?)
+
+JSR $DCD7
+JSR $82A1
+JSR $91DB
+JSR $C12D
+
+JSR $F000
+JSR $C15D	; show screen
+
+
+RTS
+

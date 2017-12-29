@@ -1,0 +1,3114 @@
+
+$08/F232: A0 00        LDY #$00
+$08/F234: A2 04        LDX #$04		; 5 digits
+
+$08/F236: B5 7C        LDA $7C,X	; transfer EXP
+$08/F238: 95 0B        STA $0B,X	; to 0B - 0F
+$08/F23A: CA           DEX 		; next digit
+$08/F23B: 10 F9        BPL $F9 [$F236]
+
+$08/F23D: A9 04        LDA #$04
+$08/F23F: 85 09        STA $09		; 5 digits?
+$08/F241: A2 00        LDX #$00
+$08/F243: 20 60 F2     JSR $F260	
+
+$08/F246: A5 7A        LDA $7A		; Get MP
+$08/F248: 20 4D F6     JSR $F64D
+$08/F24B: 20 5A F2     JSR $F25A
+
+$08/F24E: A5 70        LDA $70
+$08/F250: 29 40        AND #$40
+$08/F252: F0 01        BEQ $01 [$F255]
+$08/F254: 60           RTS 
+
+$08/F255: A5 7B        LDA $7B		; Get HP
+$08/F257: 20 4D F6     JSR $F64D	; convert to decimal
+
+$08/F25A: A9 03        LDA #$03		; 3 ?
+$08/F25C: 85 09        STA $09		; into 09
+$08/F25E: A2 01        LDX #$01		
+
+$08/F260: B5 0B        LDA $0B,X	; get digit
+$08/F262: D0 0D        BNE $0D [$F271]	; non-zero?
+$08/F264: A9 20        LDA #$20		; zero, write a blank 
+$08/F266: 99 C0 06     STA $06C0,Y      
+$08/F269: E8           INX 		; next		
+$08/F26A: C8           INY 		; next
+$08/F26B: E4 09        CPX $09		; = max num of digits?
+$08/F26D: D0 F1        BNE $F1 [$F260]  ; not yet
+$08/F26F: F0 0B        BEQ $0B [$F27C]  ; done
+
+$08/F271: B5 0B        LDA $0B,X	; get digit again
+$08/F273: 99 C0 06     STA $06C0,Y      ; write it
+$08/F276: E8           INX 
+$08/F277: C8           INY 
+$08/F278: E4 09        CPX $09		; next
+$08/F27A: D0 F5        BNE $F5 [$F271]
+
+$08/F27C: B5 0B        LDA $0B,X	; get last digit
+$08/F27E: 99 C0 06     STA $06C0,Y	; write
+$08/F281: C8           INY 
+
+$08/F282: 60           RTS 
+
+
+;HEX TO DEC - fills 0C - 0F with BCD of number in A
+
+$08/F64D: 48           PHA 
+$08/F64E: 8A           TXA 
+$08/F64F: 48           PHA 
+$08/F650: A2 00        LDX #$00
+$08/F652: 86 0C        STX $0C
+$08/F654: 86 0D        STX $0D
+$08/F656: 86 0E        STX $0E
+$08/F658: 86 0F        STX $0F
+$08/F65A: 68           PLA 
+$08/F65B: AA           TAX 
+$08/F65C: 68           PLA 
+$08/F65D: 38           SEC 
+
+$08/F65E: E9 64        SBC #$64
+$08/F660: 90 05        BCC $05 [$F667]
+$08/F662: E6 0C        INC $0C
+$08/F664: 4C 5E F6     JMP $F65E
+
+$08/F667: 69 64        ADC #$64
+$08/F669: E9 0A        SBC #$0A
+$08/F66B: 90 05        BCC $05 [$F672]
+$08/F66D: E6 0D        INC $0D
+$08/F66F: 4C 69 F6     JMP $F669
+
+$08/F672: 69 0A        ADC #$0A
+$08/F674: 85 0E        STA $0E
+$08/F676: 60           RTS 
+
+
+
+
+$07/8F5B: 20 07 92     JSR $9207
+
+$07/8F5E: 20 2D C1     JSR $C12D
+$07/8F61: 20 58 90     JSR $9058
+$07/8F64: 20 2D C1     JSR $C12D
+$07/8F67: 20 0A 91     JSR $910A
+$07/8F6A: 20 2D C1     JSR $C12D
+$07/8F6D: 20 A2 97     JSR $97A2
+$07/8F70: 20 2D C1     JSR $C12D
+$07/8F73: A9 13        LDA #$13
+$07/8F75: 20 DB C1     JSR $C1DB
+$07/8F78: A9 1F        LDA #$1F
+$07/8F7A: 20 C2 C1     JSR $C1C2
+$07/8F7D: A9 05        LDA #$05
+$07/8F7F: 20 B2 C6     JSR $C6B2
+$07/8F82: 20 2D C1     JSR $C12D
+
+$07/8F85: A9 00        LDA #$00
+$07/8F87: 85 01        STA $01
+$07/8F89: 85 00        STA $00
+$07/8F8B: 20 5D C1     JSR $C15D
+$07/8F8E: 20 2D C1     JSR $C12D
+
+$07/8F91: A5 29        LDA $29
+$07/8F93: 29 10        AND #$10
+$07/8F95: F0 36        BEQ $36 [$8FCD]
+$07/8F97: 20 53 C1     JSR $C153
+$07/8F9A: 20 2D C1     JSR $C12D
+$07/8F9D: 20 F3 DE     JSR $DEF3
+$07/8FA0: 20 2D C1     JSR $C12D
+$07/8FA3: A5 53        LDA $53
+$07/8FA5: 20 DB C1     JSR $C1DB
+$07/8FA8: 20 BB C1     JSR $C1BB
+$07/8FAB: 20 AE C6     JSR $C6AE
+$07/8FAE: A5 50        LDA $50
+$07/8FB0: 4A           LSR 
+$07/8FB1: 4A           LSR 
+$07/8FB2: 4A           LSR 
+$07/8FB3: 4A           LSR 
+$07/8FB4: 18           CLC 
+$07/8FB5: 69 10        ADC #$10
+$07/8FB7: 20 B2 C6     JSR $C6B2
+$07/8FBA: 20 D7 DC     JSR $DCD7
+$07/8FBD: 20 A1 82     JSR $82A1
+$07/8FC0: 20 DB 91     JSR $91DB
+$07/8FC3: 20 2D C1     JSR $C12D
+$07/8FC6: 20 00 F0     JSR $F000
+$07/8FC9: 20 5D C1     JSR $C15D
+$07/8FCC: 60           RTS 
+
+
+; press start to ingame menu
+$07/9207: 85 0F        STA $0F
+$07/9209: A9 1F        LDA #$1F
+$07/920B: 85 0D        STA $0D
+$07/920D: 20 FB DE     JSR $DEFB
+$07/9210: 60           RTS 
+
+;Joystick Loop
+$06/80F9: A5 27        LDA $27
+$06/80FB: 29 0F        AND #$0F
+$06/80FD: D0 1B        BNE $1B [$811A]
+$06/80FF: 24 29        BIT $29
+$06/8101: 70 11        BVS $11 [$8114]
+$06/8103: 30 3B        BMI $3B [$8140]
+$06/8105: A5 C0        LDA $C0
+$06/8107: 09 08        ORA #$08
+$06/8109: 85 C0        STA $C0
+$06/810B: A9 01        LDA #$01
+$06/810D: 85 C5        STA $C5
+$06/810F: A9 00        LDA #$00
+$06/8111: 85 C6        STA $C6
+$06/8113: 60           RTS 
+
+$07/8114: A2 04        LDX #$04
+$07/8116: 20 92 82     JSR $8292
+$07/8119: 60           RTS 
+
+$07/811A: 24 29        BIT $29
+$07/811C: 50 06        BVC $06 [$8124]
+$07/811E: A2 06        LDX #$06
+$07/8120: 20 92 82     JSR $8292
+$07/8123: 60           RTS 
+
+$07/8124: 24 29        BIT $29
+$07/8126: 30 18        BMI $18 [$8140]
+$07/8128: 20 EC 81     JSR $81EC
+$07/812B: 60           RTS 
+
+
+;When swinging sword
+$06/8292: A5 C0        LDA $C0
+$06/8294: 4A           LSR 
+$06/8295: 90 09        BCC $09 [$82A0]
+$06/8297: 4A           LSR 
+$06/8298: 90 01        BCC $01 [$829B]
+$06/829A: E8           INX 
+$06/829B: 86 BF        STX $BF		; set Willow State
+$06/829D: 20 C4 82     JSR $82C4
+$06/82A0: 60           RTS 
+
+; BEGIN Password entry screen 
+$06/B3E4: 20 53 C1     JSR $C153
+$06/B3E7: 20 64 C1     JSR $C164
+$06/B3EA: A5 20        LDA $20
+$06/B3EC: 09 01        ORA #$01
+$06/B3EE: 85 20        STA $20
+$06/B3F0: 8D 00 20     STA $2000
+$06/B3F3: 20 B1 C2     JSR $C2B1
+$06/B3F6: 20 9F C3     JSR $C39F
+$06/B3F9: A9 1E        LDA #$1E
+$06/B3FB: 85 43        STA $43
+$06/B3FD: A9 1B        LDA #$1B
+$06/B3FF: 85 42        STA $42
+$06/B401: 20 F3 DE     JSR $DEF3
+
+; Clear out password block
+$06/B404: A0 20        LDY #$20
+$06/B406: A2 00        LDX #$00
+$06/B408: A9 80        LDA #$80
+$06/B40A: 9D 40 06     STA $0640,X
+$06/B40D: E8           INX 
+$06/B40E: 88           DEY 		; Next
+$06/B40F: D0 F9        BNE $F9 [$B40A]
+
+$06/B411: A9 7E        LDA #$7E
+$06/B413: 85 33        STA $33
+$06/B415: A9 B9        LDA #$B9
+$06/B417: 85 34        STA $34
+$06/B419: 20 2F C3     JSR $C32F
+
+$06/B41C: A9 B8        LDA #$B8
+$06/B41E: 85 33        STA $33
+$06/B420: A9 B9        LDA #$B9
+$06/B422: 85 34        STA $34
+$06/B424: 20 2F C3     JSR $C32F
+
+$06/B427: A9 0C        LDA #$0C
+$06/B429: 20 AD C4     JSR $C4AD
+$06/B42C: 20 6E C1     JSR $C16E
+$06/B42F: 20 5D C1     JSR $C15D
+
+$06/B432: A9 05        LDA #$05
+$06/B434: A0 04        LDY #$04
+$06/B436: 20 36 C6     JSR $C636	; Fade in?
+
+$06/B439: A9 00        LDA #$00
+$06/B43B: 85 A0        STA $A0
+$06/B43D: 85 A1        STA $A1
+$06/B43F: 85 01        STA $01
+
+$06/B441: A5 29        LDA $29		; Get joystick state
+$06/B443: 29 10        AND #$10		; Check if Start was pressed
+$06/B445: F0 03        BEQ $03 [$B44A]	; Nope
+$06/B447: 4C 3B B5     JMP $B53B	; Yes! Do password check
+
+$06/B44A: 24 29        BIT $29		
+$06/B44C: 30 05        BMI $05 [$B453]
+$06/B44E: 50 06        BVC $06 [$B456]
+
+$06/B450: 4C 0B B6     JMP $B60B	; User pressed "B"
+
+$06/B453: 4C 91 B5     JMP $B591	; User pressed "A"
+
+$06/B456: A5 27        LDA $27		; Get button state
+$06/B458: 29 0F        AND #$0F		; D-pad only
+$06/B45A: F0 56        BEQ $56 [$B4B2]  ; Nothing pressed...
+
+$06/B45C: A5 01        LDA $01		; Check timeout
+$06/B45E: 18           CLC 
+$06/B45F: 69 20        ADC #$20
+$06/B461: 85 01        STA $01
+$06/B463: D0 54        BNE $54 [$B4B9]
+
+$06/B465: A5 27        LDA $27
+$06/B467: 29 03        AND #$03
+$06/B469: F0 1B        BEQ $1B [$B486]
+
+; Pressed Left/Right
+$06/B46B: 49 03        EOR #$03		
+$06/B46D: 0A           ASL 
+$06/B46E: 38           SEC 
+$06/B46F: E9 03        SBC #$03
+$06/B471: 85 00        STA $00
+$06/B473: 18           CLC 
+$06/B474: 65 A1        ADC $A1
+$06/B476: 29 0F        AND #$0F
+$06/B478: 85 03        STA $03
+$06/B47A: A5 A1        LDA $A1
+$06/B47C: 29 F0        AND #$F0
+$06/B47E: 18           CLC 
+$06/B47F: 65 03        ADC $03
+$06/B481: 85 A1        STA $A1
+$06/B483: 4C B9 B4     JMP $B4B9
+
+; Pressed Up/Down
+$06/B486: A5 27        LDA $27
+$06/B488: 29 0C        AND #$0C		
+$06/B48A: F0 26        BEQ $26 [$B4B2]	
+
+$06/B48C: 49 0C        EOR #$0C
+$06/B48E: 0A           ASL 
+$06/B48F: 0A           ASL 
+$06/B490: 0A           ASL 
+$06/B491: 38           SEC 
+$06/B492: E9 30        SBC #$30
+$06/B494: 85 00        STA $00
+$06/B496: 18           CLC 
+$06/B497: 65 A1        ADC $A1
+$06/B499: 85 A1        STA $A1
+$06/B49B: C9 50        CMP #$50
+$06/B49D: 90 1A        BCC $1A [$B4B9]
+$06/B49F: C9 F0        CMP #$F0
+$06/B4A1: 90 07        BCC $07 [$B4AA]
+$06/B4A3: E9 B0        SBC #$B0
+$06/B4A5: 85 A1        STA $A1
+$06/B4A7: 4C B9 B4     JMP $B4B9
+$06/B4AA: 38           SEC 
+$06/B4AB: E9 50        SBC #$50
+$06/B4AD: 85 A1        STA $A1
+$06/B4AF: 4C B9 B4     JMP $B4B9
+
+$06/B4B2: A9 E0        LDA #$E0
+$06/B4B4: 85 01        STA $01
+$06/B4B6: 4C DC B4     JMP $B4DC
+$06/B4B9: A5 A1        LDA $A1
+$06/B4BB: 29 0F        AND #$0F
+$06/B4BD: C9 05        CMP #$05
+$06/B4BF: F0 04        BEQ $04 [$B4C5]
+$06/B4C1: C9 0B        CMP #$0B
+$06/B4C3: D0 03        BNE $03 [$B4C8]
+$06/B4C5: 20 FA B8     JSR $B8FA
+$06/B4C8: A2 00        LDX #$00
+$06/B4CA: A5 A1        LDA $A1
+$06/B4CC: DD 21 BA     CMP $BA21,X
+$06/B4CF: D0 06        BNE $06 [$B4D7]
+$06/B4D1: 20 FA B8     JSR $B8FA
+$06/B4D4: 4C B9 B4     JMP $B4B9
+$06/B4D7: E8           INX 
+$06/B4D8: E0 04        CPX #$04
+$06/B4DA: D0 EE        BNE $EE [$B4CA]
+$06/B4DC: A5 23        LDA $23
+$06/B4DE: 29 08        AND #$08
+$06/B4E0: F0 4F        BEQ $4F [$B531]
+$06/B4E2: A5 A1        LDA $A1
+$06/B4E4: 29 F0        AND #$F0
+$06/B4E6: 18           CLC 
+$06/B4E7: 69 78        ADC #$78
+$06/B4E9: 8D 04 02     STA $0204
+$06/B4EC: A5 A1        LDA $A1
+$06/B4EE: 29 0F        AND #$0F
+$06/B4F0: 0A           ASL 
+$06/B4F1: 0A           ASL 
+$06/B4F2: 0A           ASL 
+$06/B4F3: 18           CLC 
+$06/B4F4: 69 40        ADC #$40
+$06/B4F6: 8D 07 02     STA $0207
+$06/B4F9: A9 6D        LDA #$6D
+$06/B4FB: 8D 05 02     STA $0205
+$06/B4FE: A9 00        LDA #$00
+$06/B500: 8D 06 02     STA $0206
+$06/B503: A2 38        LDX #$38
+$06/B505: A5 A0        LDA $A0
+$06/B507: C9 0B        CMP #$0B
+$06/B509: 90 02        BCC $02 [$B50D]
+$06/B50B: A2 48        LDX #$48
+$06/B50D: 8E 08 02     STX $0208
+$06/B510: A5 A0        LDA $A0
+$06/B512: C9 0B        CMP #$0B
+$06/B514: 90 02        BCC $02 [$B518]
+$06/B516: E9 0B        SBC #$0B
+$06/B518: 0A           ASL 
+$06/B519: 0A           ASL 
+$06/B51A: 0A           ASL 
+$06/B51B: 18           CLC 
+$06/B51C: 69 50        ADC #$50
+$06/B51E: 8D 0B 02     STA $020B
+$06/B521: A9 6D        LDA #$6D
+$06/B523: 8D 09 02     STA $0209
+$06/B526: A9 00        LDA #$00
+$06/B528: 8D 0A 02     STA $020A
+$06/B52B: 20 2D C1     JSR $C12D
+$06/B52E: 4C 41 B4     JMP $B441
+
+$06/B531: A9 F8        LDA #$F8
+$06/B533: 8D 04 02     STA $0204
+$06/B536: 8D 08 02     STA $0208
+$06/B539: D0 F0        BNE $F0 [$B52B]
+
+; Password check
+$C1/B53B: A2 12        LDX #$12			'18 characters in the code (3*6) start from last
+$C1/B53D: 86 02        STX $02			'save x
+$C1/B53F: CA           DEX 			'next char
+
+$C1/B540: BD 40 06     LDA $0640,X		'get it
+$C1/B543: C9 40        CMP #$40			'check = $40?
+$C1/B545: B0 11        BCS $11 [$1B558]		
+
+$C1/B547: CA           DEX 			'next char
+$C1/B548: 10 F6        BPL $F6 [$1B540]		'back for more	
+
+$C1/B54A: 20 74 B5     JSR $B574
+$C1/B54D: 90 16        BCC $16 [$1B565]
+
+$C1/B54F: 20 6E B7     JSR $B76E
+$C1/B552: 20 8E B7     JSR $B78E
+$C1/B555: 20 E1 B7     JSR $B7E1
+
+;FAILED!
+$C1/B558: A9 2B        LDA #$2B
+$C1/B55A: 20 AD C4     JSR $C4AD
+$C1/B55D: A9 3F        LDA #$3F
+$C1/B55F: 20 3F C1     JSR $C13F
+$C1/B562: 4C 39 B4     JMP $B439
+
+
+;SUCCESS!
+$C1/B565: A5 F5        LDA $F5
+$C1/B567: 85 23        STA $23
+$C1/B569: A9 24        LDA #$24
+$C1/B56B: 20 AD C4     JSR $C4AD
+$C1/B56E: A9 3E        LDA #$3E
+$C1/B570: 20 3F C1     JSR $C13F
+$C1/B573: 60           RTS 
+
+;CHECK PASSWORD
+;INIT 03, 0A, 0B
+
+
+$C1/B574: A9 20        LDA #$20
+$C1/B576: 85 03        STA $03
+$C1/B578: A9 40        LDA #$40
+$C1/B57A: 85 0A        STA $0A
+$C1/B57C: A9 06        LDA #$06
+$C1/B57E: 85 0B        STA $0B
+
+$C1/B580: 20 C6 B7     JSR $B7C6
+
+$C1/B583: 20 A7 B7     JSR $B7A7
+
+$C1/B586: A9 00        LDA #$00
+$C1/B588: 85 01        STA $01
+
+$C1/B58A: 20 7A B6     JSR $B67A		;INIT RAM FROM TABLE
+$C1/B58D: 20 37 B7     JSR $B737
+
+$C1/B590: 60           RTS 
+
+; User pressed "A"
+$06/B591: A5 A1        LDA $A1
+$06/B593: 38           SEC 
+$06/B594: E9 4E        SBC #$4E
+$06/B596: 90 08        BCC $08 [$B5A0]
+$06/B598: D0 03        BNE $03 [$B59D]
+$06/B59A: 4C 0B B6     JMP $B60B
+$06/B59D: 4C E7 B5     JMP $B5E7
+$06/B5A0: A5 A1        LDA $A1
+$06/B5A2: 85 05        STA $05
+$06/B5A4: 4A           LSR 
+$06/B5A5: 4A           LSR 
+$06/B5A6: 4A           LSR 
+$06/B5A7: 4A           LSR 
+$06/B5A8: AA           TAX 
+$06/B5A9: C6 05        DEC $05
+$06/B5AB: C6 05        DEC $05
+$06/B5AD: CA           DEX 
+$06/B5AE: D0 F9        BNE $F9 [$B5A9]
+$06/B5B0: A5 A1        LDA $A1
+$06/B5B2: 29 0F        AND #$0F
+$06/B5B4: C9 05        CMP #$05
+$06/B5B6: 90 08        BCC $08 [$B5C0]
+$06/B5B8: C6 05        DEC $05
+$06/B5BA: C9 0B        CMP #$0B
+$06/B5BC: 90 02        BCC $02 [$B5C0]
+$06/B5BE: C6 05        DEC $05
+$06/B5C0: A2 00        LDX #$00
+$06/B5C2: A5 A1        LDA $A1
+$06/B5C4: DD 21 BA     CMP $BA21,X
+$06/B5C7: 90 07        BCC $07 [$B5D0]
+$06/B5C9: C6 05        DEC $05
+$06/B5CB: E8           INX 
+$06/B5CC: E0 04        CPX #$04
+$06/B5CE: D0 F2        BNE $F2 [$B5C2]
+$06/B5D0: A5 A0        LDA $A0
+$06/B5D2: A8           TAY 
+$06/B5D3: A2 00        LDX #$00
+$06/B5D5: A5 A0        LDA $A0
+$06/B5D7: DD 25 BA     CMP $BA25,X
+$06/B5DA: 90 06        BCC $06 [$B5E2]
+$06/B5DC: 88           DEY 
+$06/B5DD: E8           INX 
+$06/B5DE: E0 04        CPX #$04
+$06/B5E0: D0 F3        BNE $F3 [$B5D5]
+$06/B5E2: A5 05        LDA $05
+$06/B5E4: 99 40 06     STA $0640,Y
+$06/B5E7: E6 A0        INC $A0
+$06/B5E9: A2 00        LDX #$00
+$06/B5EB: A5 A0        LDA $A0
+$06/B5ED: DD 25 BA     CMP $BA25,X
+$06/B5F0: D0 02        BNE $02 [$B5F4]
+$06/B5F2: E6 A0        INC $A0
+$06/B5F4: E8           INX 
+$06/B5F5: E0 04        CPX #$04
+$06/B5F7: D0 F2        BNE $F2 [$B5EB]
+$06/B5F9: A5 A0        LDA $A0
+$06/B5FB: C9 16        CMP #$16
+$06/B5FD: 90 02        BCC $02 [$B601]
+$06/B5FF: C6 A0        DEC $A0
+$06/B601: A9 12        LDA #$12
+$06/B603: 85 02        STA $02
+$06/B605: 20 E1 B7     JSR $B7E1
+$06/B608: 4C DC B4     JMP $B4DC
+
+; User pressed "B" / Move back one letter
+$06/B60B: C6 A0        DEC $A0
+$06/B60D: A2 00        LDX #$00
+$06/B60F: A5 A0        LDA $A0
+$06/B611: DD 25 BA     CMP $BA25,X
+$06/B614: D0 02        BNE $02 [$B618]
+$06/B616: C6 A0        DEC $A0
+$06/B618: E8           INX 
+$06/B619: E0 04        CPX #$04
+$06/B61B: D0 F2        BNE $F2 [$B60F]
+$06/B61D: 24 A0        BIT $A0
+$06/B61F: 10 02        BPL $02 [$B623]
+$06/B621: E6 A0        INC $A0
+$06/B623: 4C DC B4     JMP $B4DC
+$06/B626: A5 23        LDA $23
+$06/B628: 85 F5        STA $F5
+$06/B62A: A5 32        LDA $32
+$06/B62C: 85 F6        STA $F6
+$06/B62E: A2 00        LDX #$00
+$06/B630: 86 00        STX $00
+$06/B632: 8A           TXA 
+$06/B633: 9D 40 06     STA $0640,X
+$06/B636: A9 20        LDA #$20
+$06/B638: 85 01        STA $01
+$06/B63A: 20 50 B6     JSR $B650
+$06/B63D: 20 00 B7     JSR $B700
+$06/B640: 86 02        STX $02
+$06/B642: 20 0B B7     JSR $B70B
+$06/B645: 20 6E B7     JSR $B76E
+$06/B648: 20 8E B7     JSR $B78E
+$06/B64B: 60           RTS 
+
+$06/B64C: 20 E1 B7     JSR $B7E1
+$06/B64F: 60           RTS 
+
+$06/B650: A9 00        LDA #$00
+$06/B652: 85 06        STA $06
+$06/B654: A6 06        LDX $06
+$06/B656: BD 1C B9     LDA $B91C,X
+$06/B659: F0 1E        BEQ $1E [$B679]
+$06/B65B: 85 07        STA $07
+$06/B65D: BD 1D B9     LDA $B91D,X
+$06/B660: 85 08        STA $08
+$06/B662: BD 1E B9     LDA $B91E,X
+$06/B665: 85 09        STA $09
+$06/B667: A0 00        LDY #$00
+$06/B669: B1 08        LDA ($08),Y
+$06/B66B: A4 07        LDY $07
+$06/B66D: 20 A0 B6     JSR $B6A0
+$06/B670: E6 06        INC $06
+$06/B672: E6 06        INC $06
+$06/B674: E6 06        INC $06
+$06/B676: 4C 54 B6     JMP $B654
+$06/B679: 60           RTS 
+
+; Load HP from table
+$06/B67A: A9 00        LDA #$00
+$06/B67C: 85 06        STA $06
+$06/B67E: A6 06        LDX $06
+$06/B680: BD 1D B9     LDA $B91D,X
+$06/B683: 85 08        STA $08
+$06/B685: BD 1E B9     LDA $B91E,X
+$06/B688: 85 09        STA $09
+$06/B68A: BD 1C B9     LDA $B91C,X
+$06/B68D: F0 10        BEQ $10 [$B69F]
+$06/B68F: 20 D8 B6     JSR $B6D8
+$06/B692: A0 00        LDY #$00
+$06/B694: 91 08        STA ($08),Y
+$06/B696: E6 06        INC $06
+$06/B698: E6 06        INC $06
+$06/B69A: E6 06        INC $06
+$06/B69C: 4C 7E B6     JMP $B67E
+$06/B69F: 60           RTS 
+
+
+
+;INIT RAM FROM TABLE
+$C1/B67A: A9 00        LDA #$00
+$C1/B67C: 85 06        STA $06
+$C1/B67E: A6 06        LDX $06
+$C1/B680: BD 1D B9     LDA $B91D,X
+$C1/B683: 85 08        STA $08
+$C1/B685: BD 1E B9     LDA $B91E,X
+$C1/B688: 85 09        STA $09
+$C1/B68A: BD 1C B9     LDA $B91C,X
+$C1/B68D: F0 10        BEQ $10 [$1B69F]
+
+$C1/B68F: 20 D8 B6     JSR $B6D8		;Decode?
+
+$C1/B692: A0 00        LDY #$00
+$C1/B694: 91 08        STA ($08),Y
+
+$C1/B696: E6 06        INC $06			;x3 offset into table
+$C1/B698: E6 06        INC $06
+$C1/B69A: E6 06        INC $06
+
+$C1/B69C: 4C 7E B6     JMP $B67E
+$C1/B69F: 60           RTS 
+
+;TABLE - perform Decode X times and store result in YY
+          X  Y  Y                   
+$C1/B91C: 06 F0 00	;#$06 => 00F0 
+$C1/B91F: 06 F1 00	;#$06 => 00F1 
+$C1/B922: 03 F5 00 	;#$03 => 00F5
+$C1/B925: 08 00 06 	;#$08 => 0600
+$C1/B928: 08 01 06 	;#$08 => 0601
+$C1/B92B: 08 02 06 	;#$08 => 0602
+$C1/B92E: 08 03 06 	;#$08 => 0603
+$C1/B931: 08 04 06 	;#$08 => 0604
+$C1/B934: 08 05 06  	;#$08 => 0605
+$C1/B937: 08 06 06  	;#$08 => 0606
+$C1/B93A: 08 07 06  	;#$08 => 0607
+$C1/B93D: 08 08 06  	;#$08 => 0608
+$C1/B940: 08 09 06  	;#$08 => 0609
+
+$C1/B943: 08 71 00  	;#$08 => 0071 ; 
+
+$C1/B946: 03 F6 00  	;#$03 => 00F6
+$C1/B949: 00 00 00 	;EOF
+
+; Decode 
+
+initially
+;($0A) = $0640 = 06
+; $01 = 00 
+
+; $03 = 20
+
+
+
+$C1/B6D8: 85 0C        STA $0C   ; number of times to loop
+$C1/B6DA: A9 00        LDA #$00
+$C1/B6DC: 85 07        STA $07   ;Clear out temp
+$C1/B6DE: A4 01        LDY $01
+$C1/B6E0: 18           CLC 
+
+;if ($0640 + Y) & ($03) != 0
+$C1/B6E1: B1 0A        LDA ($0A),Y		
+$C1/B6E3: 25 03        AND $03
+$C1/B6E5: F0 01        BEQ $01 [$1B6E8]
+
+$C1/B6E7: 38           SEC 
+$C1/B6E8: 26 07        ROL $07  ; rotate temp bits 
+$C1/B6EA: 46 03        LSR $03  ; / 2
+
+$C1/B6EC: D0 09        BNE $09 [$1B6F7]
+
+$C1/B6EE: A9 20        LDA #$20           ; 
+$C1/B6F0: 85 03        STA $03            ; init 03 
+$C1/B6F2: C8           INY 		  ; next code
+$C1/B6F3: D0 02        BNE $02 [$1B6F7]
+
+$C1/B6F5: E6 0B        INC $0B
+
+$C1/B6F7: C6 0C        DEC $0C            ; next
+$C1/B6F9: D0 E5        BNE $E5 [$1B7E0]   ; more? loop!
+$C1/B6FB: 84 01        STY $01             
+$C1/B6FD: A5 07        LDA $07            ; return temp
+$C1/B6FF: 60           RTS 
+
+
+
+$C1/B737: 20 4B B7     JSR $B74B		;CHECKSUM 1
+$C1/B73A: D0 0D        BNE $0D [$1B749]		;SET PWD FAILED!
+
+$C1/B73C: 20 5D B7     JSR $B75D		;CHECKSUM 2
+$C1/B73F: D0 08        BNE $08 [$1B749]		;SET PWD FAILED!
+
+$C1/B741: A5 71        LDA $71			;CHECK 3
+$C1/B743: C9 10        CMP #$10
+$C1/B745: B0 02        BCS $02 [$1B749]	>=	;SET PWD FAILED!
+
+
+;SET PWD SUCCESS!
+$C1/B747: 18           CLC 
+$C1/B748: 60           RTS 
+
+;SET PWD FAILED!
+$C1/B749: 38           SEC 
+$C1/B74A: 60           RTS 
+
+;Checksum 1
+$C1/B74B: A2 02        LDX #$02
+$C1/B74D: A9 00        LDA #$00
+$C1/B74F: 18           CLC 
+$C1/B750: 7D 40 06     ADC $0640,X
+$C1/B753: E8           INX 
+$C1/B754: E4 02        CPX $02
+$C1/B756: 90 F7        BCC $F7 [$1B74F]
+$C1/B758: 29 3F        AND #$3F
+$C1/B75A: C5 F0        CMP $F0
+$C1/B75C: 60           RTS 
+
+;Checksum 2
+$C1/B75D: A2 02        LDX #$02
+$C1/B75F: A9 00        LDA #$00
+$C1/B761: 5D 40 06     EOR $0640,X
+$C1/B764: E8           INX 
+$C1/B765: E4 02        CPX $02
+$C1/B767: 90 F8        BCC $F8 [$1B761]
+$C1/B769: 29 3F        AND #$3F
+$C1/B76B: C5 F1        CMP $F1
+$C1/B76D: 60           RTS 
+
+
+
+$C1/B76E: A2 00        LDX #$00
+$C1/B770: 86 03        STX $03
+$C1/B772: A5 03        LDA $03
+$C1/B774: C5 02        CMP $02
+$C1/B776: F0 15        BEQ $15 [$1B78D]
+$C1/B778: AA           TAX 
+$C1/B779: 29 03        AND #$03
+$C1/B77B: A8           TAY 
+$C1/B77C: BD 40 06     LDA $0640,X
+$C1/B77F: 18           CLC 
+$C1/B780: 79 4C B9     ADC $B94C,Y
+$C1/B783: 29 3F        AND #$3F
+$C1/B785: 9D 40 06     STA $0640,X
+$C1/B788: E6 03        INC $03
+$C1/B78A: 4C 72 B7     JMP $B772
+$C1/B78D: 60           RTS 
+
+
+$C1/B78E: A9 1F        LDA #$1F
+$C1/B790: A2 00        LDX #$00
+$C1/B792: E4 02        CPX $02
+$C1/B794: F0 10        BEQ $10 [$1B7A6]
+$C1/B796: D0 03        BNE $03 [$1B79B]
+$C1/B798: BD 3F 06     LDA $063F,X
+$C1/B79B: 5D 40 06     EOR $0640,X
+$C1/B79E: 9D 40 06     STA $0640,X
+$C1/B7A1: E8           INX 
+$C1/B7A2: E4 02        CPX $02
+$C1/B7A4: 90 F2        BCC $F2 [$1B898]
+$C1/B7A6: 60           RTS 
+
+
+$C1/B7A7: A2 00        LDX #$00
+$C1/B7A9: 86 00        STX $00
+$C1/B7AB: A5 00        LDA $00
+$C1/B7AD: C5 02        CMP $02
+$C1/B7AF: F0 14        BEQ $14 [$1B7C5]
+$C1/B7B1: AA           TAX 
+$C1/B7B2: 29 03        AND #$03
+$C1/B7B4: A8           TAY 
+$C1/B7B5: BD 40 06     LDA $0640,X
+$C1/B7B8: 38           SEC 
+$C1/B7B9: F9 4C B9     SBC $B94C,Y
+$C1/B7BC: 29 3F        AND #$3F
+$C1/B7BE: 9D 40 06     STA $0640,X
+$C1/B7C1: E6 00        INC $00
+$C1/B7C3: D0 E6        BNE $E6 [$1B7AB]
+$C1/B7C5: 60           RTS 
+
+
+$C1/B7C6: A6 02        LDX $02
+$C1/B7C8: F0 16        BEQ $16 [$1B7E0]
+$C1/B7CA: D0 09        BNE $09 [$1B7D5]
+$C1/B7CC: BD 40 06     LDA $0640,X
+$C1/B7CF: 5D 3F 06     EOR $063F,X
+$C1/B7D2: 9D 40 06     STA $0640,X
+
+$C1/B7D5: CA           DEX 
+$C1/B7D6: D0 F4        BNE $F4 [$1B7CC]
+$C1/B7D8: A9 1F        LDA #$1F
+$C1/B7DA: 5D 40 06     EOR $0640,X
+$C1/B7DD: 9D 40 06     STA $0640,X
+$C1/B7E0: 60           RTS 
+
+
+
+$C1/B7E1: 20 26 B8     JSR $B826
+$C1/B7E4: A9 02        LDA #$02
+$C1/B7E6: 85 04        STA $04
+$C1/B7E8: A6 40        LDX $40
+$C1/B7EA: A0 00        LDY #$00
+$C1/B7EC: A9 24        LDA #$24
+$C1/B7EE: 9D 00 05     STA $0500,X
+$C1/B7F1: E8           INX 
+$C1/B7F2: A9 CA        LDA #$CA
+$C1/B7F4: 9D 00 05     STA $0500,X
+
+$C1/B7F7: E8           INX 
+$C1/B7F8: A9 0B        LDA #$0B
+$C1/B7FA: 9D 00 05     STA $0500,X
+$C1/B7FD: E8           INX 
+
+$C1/B7FE: B9 58 06     LDA $0658,Y
+$C1/B801: 9D 00 05     STA $0500,X
+$C1/B804: E8           INX 
+$C1/B805: C8           INY 
+$C1/B806: C0 0B        CPY #$0B
+$C1/B808: F0 06        BEQ $06 [$1B810]
+$C1/B80A: C0 16        CPY #$16
+$C1/B80C: F0 10        BEQ $10 [$1B81E]
+$C1/B80E: D0 EE        BNE $EE [$1B7FE]
+
+$C1/B810: A9 25        LDA #$25
+$C1/B812: 9D 00 05     STA $0500,X
+$C1/B815: E8           INX 
+$C1/B816: A9 0A        LDA #$0A
+$C1/B818: 9D 00 05     STA $0500,X
+$C1/B81B: 4C F7 B7     JMP $B7F7
+
+$C1/B81E: 86 40        STX $40
+$C1/B820: A9 00        LDA #$00
+$C1/B822: 9D 00 05     STA $0500,X
+$C1/B825: 60           RTS 
+
+
+$C1/B826: A9 00        LDA #$00
+$C1/B828: 85 04        STA $04
+$C1/B82A: A8           TAY 
+$C1/B82B: A6 04        LDX $04
+$C1/B82D: BD 40 06     LDA $0640,X
+$C1/B830: 30 04        BMI $04 [$1B836]
+
+$C1/B832: AA           TAX 
+$C1/B833: BD DF B9     LDA $B9DF,X
+
+$C1/B836: 99 58 06     STA $0658,Y
+$C1/B839: E6 04        INC $04
+$C1/B83B: C8           INY 
+
+$C1/B83C: C0 03        CPY #$03
+$C1/B83E: F0 0C        BEQ $0C [$1B84C]
+
+$C1/B840: C0 07        CPY #$07
+$C1/B842: F0 08        BEQ $08 [$1B84C]
+
+$C1/B844: C0 0E        CPY #$0E
+$C1/B846: F0 04        BEQ $04 [$1B84C]
+
+$C1/B848: C0 12        CPY #$12
+$C1/B84A: D0 06        BNE $06 [$1B852]
+
+$C1/B84C: A9 80        LDA #$80
+$C1/B84E: 99 58 06     STA $0658,Y
+$C1/B851: C8           INY 
+
+$C1/B852: A5 04        LDA $04
+$C1/B854: C5 02        CMP $02
+$C1/B856: 90 D3        BCC $D3 [$1B82B] (>=)
+$C1/B858: 60           RTS 
+
+==============================================================
+Loads? game data
+
+==============================================================
+
+$06/B859: A2 17        LDX #$17
+$06/B85B: BD 70 06     LDA $0670,X
+$06/B85E: 9D 40 06     STA $0640,X
+$06/B861: CA           DEX 
+$06/B862: 10 F7        BPL $F7 [$B85B]
+$06/B864: 60           RTS 
+
+==============================================================
+Saves? game data
+==============================================================
+$06/B865: A2 17        LDX #$17
+$06/B867: BD 40 06     LDA $0640,X
+$06/B86A: 9D 70 06     STA $0670,X
+$06/B86D: CA           DEX 
+$06/B86E: 10 F7        BPL $F7 [$B867]
+$06/B870: 60           RTS 
+
+
+==============================================================
+;Load STATS
+==============================================================
+$06/B871: A6 71        LDX $71
+$06/B873: BD EB D1     LDA $D1EB,X
+$06/B876: 85 B5        STA $B5
+$06/B878: BD FB D1     LDA $D1FB,X
+$06/B87B: 85 7B        STA $7B
+$06/B87D: BD 0B D2     LDA $D20B,X
+$06/B880: 85 7A        STA $7A
+
+$06/B882: A9 00        LDA #$00
+$06/B884: A8           TAY 
+$06/B885: 99 7C 00     STA $007C,Y
+$06/B888: C8           INY 
+$06/B889: C0 05        CPY #$05
+$06/B88B: 90 F8        BCC $F8 [$B885]
+
+$06/B88D: 8A           TXA 		; X = player level
+
+$06/B88E: F0 18        BEQ $18 [$B8A8]  ; level one- no need to player XP
+
+$06/B890: CA           DEX 		
+$06/B891: 86 00        STX $00		
+$06/B893: 8A           TXA 		
+$06/B894: 0A           ASL 		
+$06/B895: 0A           ASL              
+$06/B896: 18           CLC 		
+$06/B897: 65 00        ADC $00		
+$06/B899: AA           TAX 		
+$06/B89A: A0 00        LDY #$00		
+
+$06/B89C: BD 1B D2     LDA $D21B,X	; Load XP from table
+$06/B89F: 99 7C 00     STA $007C,Y	; fill'er up
+$06/B8A2: E8           INX 
+$06/B8A3: C8           INY 
+$06/B8A4: C0 05        CPY #$05
+$06/B8A6: 90 F4        BCC $F4 [$B89C]
+
+$06/B8A8: A9 80        LDA #$80
+$06/B8AA: 85 C0        STA $C0
+
+$06/B8AC: A9 02        LDA #$02
+$06/B8AE: 85 C1        STA $C1
+
+$06/B8B0: A9 06        LDA #$06
+$06/B8B2: 85 C8        STA $C8
+
+$06/B8B4: A9 89        LDA #$89
+$06/B8B6: 85 CC        STA $CC
+
+$06/B8B8: A9 98        LDA #$98
+$06/B8BA: 85 CE        STA $CE
+
+
+
+$06/B8D2: A5 00        LDA $00
+$06/B8D4: 0A           ASL 
+$06/B8D5: AA           TAX 
+$06/B8D6: BD 0C B9     LDA $B90C,X	Set map coords
+$06/B8D9: 85 43        STA $43
+$06/B8DB: BD 0D B9     LDA $B90D,X
+$06/B8DE: 85 42        STA $42
+
+$06/B8F9: 60           RTS 
+==============================================================
+;END Load STATS
+==============================================================
+
+
+
+
+
+$C1/B9DF: 2A 2B 2C 2D 2E 10 11 12 13 14 F0 F1 F2 F3 15 16 
+$C1/B9EF: 17 18 19 2F 30 31 32 33 F4 F5 F6 F7 1A 1B 1C 1D 
+$C1/B9FF: 1E 34 35 36 F8 F9 E0 E1 43 44 45 46 47 37 6A 39 
+$C1/BA0F: 3A 3B E2 E3 E4 E5 25 26 27 28 29 3D 3C 3E E6 E7 
+$C1/BA1F: 04 05 27 29 47 49 03 07 0E 12 A9 FF 20 AD C4 A9 
+$C1/BA2F: 32 20 AD C4 20 94 C3 A9 00 85 C7 20 03 C4 20 DD 
+$C1/BA3F: C3 A9 3F 20 3F C1 A9 7E 85 00 A9 73 20 B2 C6 A9 
+$C1/BA4F: 20 8D B0 06 A5 23 29 04 D0 03 20 40 DD 20 2D C1 
+$C1/BA5F: C6 00 D0 E6 A2 0F A9 20 9D A0 06 CA 10 F8 A2 1F 
+$C1/BA6F: A9 0F 9D A0 06 CA E0 10 B0 F6 86 30 A9 3F 20 3F 
+$C1/BA7F: C1 A5 2F 85 2E A0 04 20 0E C6 20 2D C1 20 53 C1 
+$C1/BA8F: 20 64 C1 20 B1 C2 20 9F C3 A9 1E 85 43 A9 1A 85 
+$C1/BA9F: 42 20 F3 DE E6 42 20 F3 DE A5 20 29 FE 85 20 A9 
+$C1/BAAF: 13 20 DB C1 A9 1F 20 C2 C1 24 58 50 06 20 59 B8 
+$C1/BABF: 4C C5 BA 20 26 B6 20 6E C1 A9 15 20 AD C4 A9 05 
+$C1/BACF: 20 B2 C6 20 2D C1 20 5D C1 A9 E9 85 33 A9 BB 85 
+$C1/BADF: 34 20 2D C1 A5 29 29 D0 F0 F7 A9 C5 85 33 A9 BB 
+$C1/BAEF: 85 34 20 2D C1 A9 68 8D 04 02 A9 83 8D 05 02 A9 
+$C1/BAFF: 01 8D 06 02 A9 50 8D 07 02 20 2D C1 A5 29 29 10 
+BB0E
+
+
+$07/C12D: A9 01        LDA #$01
+$07/C12F: 85 22        STA $22
+$07/C131: A5 22        LDA $22
+$07/C133: D0 FC        BNE $FC [$C131]
+$07/C135: 60           RTS 
+
+$07/C136: 20 A4 D1     JSR $D1A4
+$07/C139: A9 01        LDA #$01
+$07/C13B: 85 22        STA $22
+$07/C13D: D0 F2        BNE $F2 [$C131]	; always branches?
+
+$07/C13F: 85 2D        STA $2D
+$07/C141: 20 2D C1     JSR $C12D
+$07/C144: C6 2D        DEC $2D
+$07/C146: D0 F9        BNE $F9 [$C141]
+$07/C148: 60           RTS 
+
+
+$07/C153: A5 21        LDA $21
+$07/C155: 29 E7        AND #$E7
+$07/C157: 85 21        STA $21
+$07/C159: 8D 01 20     STA $2001
+$07/C15C: 60           RTS 
+
+$07/C15D: A5 21        LDA $21
+$07/C15F: 09 1E        ORA #$1E
+$07/C161: 85 21        STA $21
+$07/C163: 60           RTS 
+
+
+$07/C164: A5 20        LDA $20
+$07/C166: 29 7F        AND #$7F
+$07/C168: 8D 00 20     STA $2000
+$07/C16B: 85 20        STA $20
+$07/C16D: 60           RTS 
+
+
+; Set $0200 to #$F8
+$07/C39F: A9 F8        LDA #$F8
+$07/C3A1: A2 00        LDX #$00
+$07/C3A3: 9D 00 02     STA $0200,X
+$07/C3A6: E8           INX 
+$07/C3A7: E8           INX 
+$07/C3A8: E8           INX 
+$07/C3A9: E8           INX 
+$07/C3AA: D0 F7        BNE $F7 [$C3A3]
+$07/C3AC: 60           RTS 
+
+
+
+$07/C46C: 20 75 C4     JSR $C475
+$07/C46F: BD 00 06     LDA $0600,X
+$07/C472: 25 F2        AND $F2
+$07/C474: 60           RTS 
+
+$07/C475: A2 01        LDX #$01
+$07/C477: 86 F2        STX $F2
+$07/C479: 48           PHA 
+$07/C47A: 4A           LSR 
+$07/C47B: 4A           LSR 
+$07/C47C: 4A           LSR 
+$07/C47D: AA           TAX 
+$07/C47E: 68           PLA 
+$07/C47F: 29 07        AND #$07
+$07/C481: A8           TAY 
+$07/C482: F0 05        BEQ $05 [$C489]
+$07/C484: 06 F2        ASL $F2
+$07/C486: 88           DEY 
+$07/C487: D0 FB        BNE $FB [$C484]
+$07/C489: 60           RTS 
+
+
+$07/C64D: A9 1F        LDA #$1F
+$07/C64F: 85 0C        STA $0C
+$07/C651: A9 FF        LDA #$FF
+$07/C653: 85 0D        STA $0D
+$07/C655: A9 10        LDA #$10
+$07/C657: AA           TAX 
+$07/C658: 85 0F        STA $0F
+$07/C65A: 86 0B        STX $0B
+$07/C65C: 84 0E        STY $0E
+$07/C65E: A5 50        LDA $50
+$07/C660: 4A           LSR 
+$07/C661: 4A           LSR 
+$07/C662: 4A           LSR 
+$07/C663: 4A           LSR 
+$07/C664: 18           CLC 
+$07/C665: 69 10        ADC #$10
+$07/C667: 24 5D        BIT $5D
+$07/C669: 70 02        BVS $02 [$C66D]
+$07/C66B: A5 2E        LDA $2E
+$07/C66D: 20 B2 C6     JSR $C6B2
+$07/C670: A4 0C        LDY $0C
+$07/C672: B9 A0 06     LDA $06A0,Y
+$07/C675: 38           SEC 
+$07/C676: E5 0F        SBC $0F
+$07/C678: 10 02        BPL $02 [$C67C]
+$07/C67A: A9 0F        LDA #$0F
+$07/C67C: 99 A0 06     STA $06A0,Y
+$07/C67F: 88           DEY 
+$07/C680: C4 0D        CPY $0D
+$07/C682: D0 EE        BNE $EE [$C672]
+$07/C684: A5 0E        LDA $0E
+$07/C686: 48           PHA 
+$07/C687: 24 5D        BIT $5D
+$07/C689: 10 06        BPL $06 [$C691]
+$07/C68B: 20 36 C1     JSR $C136
+$07/C68E: 4C 94 C6     JMP $C694
+
+$07/C691: 20 2D C1     JSR $C12D
+$07/C694: 68           PLA 
+$07/C695: 38           SEC 
+$07/C696: E9 01        SBC #$01
+$07/C698: D0 EC        BNE $EC [$C686]
+$07/C69A: A5 0F        LDA $0F
+$07/C69C: 18           CLC 
+$07/C69D: 65 0B        ADC $0B
+$07/C69F: 85 0F        STA $0F
+$07/C6A1: C9 50        CMP #$50
+$07/C6A3: F0 04        BEQ $04 [$C6A9]
+$07/C6A5: 24 0F        BIT $0F
+$07/C6A7: 10 B5        BPL $B5 [$C65E]
+$07/C6A9: A9 00        LDA #$00
+$07/C6AB: 85 5D        STA $5D
+$07/C6AD: 60           RTS 
+
+$07/C6AE: A5 2F        LDA $2F
+$07/C6B0: 85 2F        STA $2F
+$07/C6B2: 85 2E        STA $2E
+$07/C6B4: AA           TAX 
+$07/C6B5: BD 64 D0     LDA $D064,X
+$07/C6B8: 85 F2        STA $F2
+$07/C6BA: BD 04 D1     LDA $D104,X
+$07/C6BD: 85 F3        STA $F3
+$07/C6BF: A0 00        LDY #$00
+$07/C6C1: B1 F2        LDA ($F2),Y
+$07/C6C3: AA           TAX 
+$07/C6C4: C8           INY 
+$07/C6C5: B1 F2        LDA ($F2),Y
+$07/C6C7: 30 06        BMI $06 [$C6CF]
+$07/C6C9: 9D A0 06     STA $06A0,X
+$07/C6CC: E8           INX 
+$07/C6CD: D0 F5        BNE $F5 [$C6C4]
+$07/C6CF: 84 30        STY $30
+$07/C6D1: 60           RTS 
+
+
+;===========================================
+; After main menu selection made...
+;===========================================
+
+$07/DE26: AD 04 02     LDA $0204
+$07/DE29: C9 70        CMP #$70
+$07/DE2B: 90 4A        BCC $4A [$DE77]
+
+;===========================================
+;  Do Password screen
+;===========================================
+$07/DE2D: A0 04        LDY #$04
+$07/DE2F: 20 4D C6     JSR $C64D	; Fade out
+
+$07/DE32: 20 E4 B3     JSR $B3E4
+
+$07/DE35: A0 04        LDY #$04
+$07/DE37: 20 4D C6     JSR $C64D	; Fade out
+
+$07/DE3A: A9 FF        LDA #$FF
+$07/DE3C: 85 D7        STA $D7
+
+$07/DE3E: 20 71 B8     JSR $B871	; Load STATS
+
+$07/DE41: 20 2D C1     JSR $C12D
+$07/DE44: 20 53 C1     JSR $C153
+$07/DE47: 20 C9 9D     JSR $9DC9
+
+$07/DE4A: A9 00        LDA #$00
+$07/DE4C: 85 6C        STA $6C
+$07/DE4E: 85 52        STA $52
+$07/DE50: 85 D6        STA $D6
+$07/DE52: 85 55        STA $55
+
+$07/DE54: A5 D5        LDA $D5
+$07/DE56: 85 D7        STA $D7
+$07/DE58: 8D 90 06     STA $0690
+
+$07/DE5B: A9 01        LDA #$01
+$07/DE5D: 85 D9        STA $D9
+
+$07/DE5F: 20 D7 DC     JSR $DCD7
+$07/DE62: 20 2D C1     JSR $C12D
+$07/DE65: 20 F3 DE     JSR $DEF3
+$07/DE68: 20 2D C1     JSR $C12D
+$07/DE6B: 20 00 F0     JSR $F000
+$07/DE6E: 20 5D C1     JSR $C15D
+$07/DE71: 20 2D C1     JSR $C12D
+
+$07/DE74: 4C A9 DE     JMP $DEA9
+
+;===========================================
+;  Start new game
+;===========================================
+
+$07/DE77: A9 24        LDA #$24
+$07/DE79: 20 AD C4     JSR $C4AD  ; ???
+$07/DE7C: A9 3E        LDA #$3E   ; Success sound
+$07/DE7E: 20 3F C1     JSR $C13F  ; Play sound effect	
+
+$07/DE81: 20 53 C1     JSR $C153
+$07/DE84: 20 64 C1     JSR $C164
+$07/DE87: 20 9F C3     JSR $C39F
+$07/DE8A: 20 B2 DE     JSR $DEB2  ; INIT for New Game
+$07/DE8D: 20 F3 DE     JSR $DEF3
+$07/DE90: 20 D7 DC     JSR $DCD7
+$07/DE93: 20 6E C1     JSR $C16E
+
+$07/DE96: 20 2D C1     JSR $C12D
+$07/DE99: 20 00 F0     JSR $F000
+$07/DE9C: 20 5D C1     JSR $C15D
+
+$07/DE9F: A9 04        LDA #$04
+$07/DEA1: 85 D5        STA $D5
+$07/DEA3: 20 AB C4     JSR $C4AB
+
+$07/DEA6: 20 2D C1     JSR $C12D
+
+$07/DEA9: 20 4C DF     JSR $DF4C  ; Main Loop?
+$07/DEAC: 20 27 DF     JSR $DF27
+$07/DEAF: 4C A9 DE     JMP $DEA9  : Repeat?
+
+;===========================================
+; INIT for New Game 
+;===========================================
+
+$07/DEB2: A9 1C        LDA #$1C	  ; Set Map coordinates
+$07/DEB4: 85 43        STA $43	
+$07/DEB6: A9 0F        LDA #$0F
+$07/DEB8: 85 42        STA $42
+
+$07/DEBA: A9 18        LDA #$18	  ; Starting HP = 24
+$07/DEBC: 85 7B        STA $7B
+
+$07/DEBE: A9 00        LDA #$00	  
+$07/DEC0: 85 B3        STA $B3    ; STR = 0
+$07/DEC2: 85 B4        STA $B4    ; DEF = 0
+
+$07/DEC4: A9 0A        LDA #$0A
+$07/DEC6: 85 B5        STA $B5    ; AGI = 10
+
+$07/DEC8: A9 80        LDA #$80   ; Willow sprite?
+$07/DECA: 85 C0        STA $C0
+
+$07/DECC: A9 84        LDA #$84
+$07/DECE: 85 CC        STA $CC    ; Willow Y position (20-D0)
+
+$07/DED0: A9 90        LDA #$90    
+$07/DED2: 85 CE        STA $CE    ; Willow X position (18-E8)
+
+$07/DED4: A9 02        LDA #$02
+$07/DED6: 85 C1        STA $C1	  ; Willow Facing (00 = Back; 02 = Front)
+
+$07/DED8: A9 06        LDA #$06
+$07/DEDA: 85 C8        STA $C8	  ; Willow Stance (02 = Swing; 06 = Stand)
+
+$07/DEDC: A9 04        LDA #$04   
+$07/DEDE: 85 53        STA $53
+$07/DEE0: 20 DB C1     JSR $C1DB  ; Set Tileset
+
+$07/DEE3: A9 00        LDA #$00
+$07/DEE5: 20 BB C1     JSR $C1BB
+
+$07/DEE8: A9 04        LDA #$04
+$07/DEEA: 20 B0 C6     JSR $C6B0	; Set palette (BG)
+
+$07/DEED: A9 10        LDA #$10
+$07/DEEF: 20 B2 C6     JSR $C6B2	; Set palette 2 (Sprite/BG?)
+
+$07/DEF2: 60           RTS 
+
+
+$07/D927: A9 00        LDA #$00
+$07/D929: 85 0E        STA $0E
+$07/D92B: 20 26 DA     JSR $DA26
+
+$07/D92E: A9 00        LDA #$00
+$07/D930: 85 06        STA $06
+$07/D932: 20 52 DA     JSR $DA52
+$07/D935: 20 A4 DA     JSR $DAA4
+$07/D938: 85 04        STA $04
+$07/D93A: A5 06        LDA $06
+$07/D93C: 0A           ASL 
+$07/D93D: AA           TAX 
+$07/D93E: A5 04        LDA $04
+$07/D940: 29 3F        AND #$3F
+$07/D942: 0A           ASL 
+$07/D943: 0A           ASL 
+$07/D944: 9D C0 06     STA $06C0,X
+$07/D947: A8           TAY 
+$07/D948: C8           INY 
+$07/D949: 98           TYA 
+$07/D94A: 9D E0 06     STA $06E0,X
+$07/D94D: A8           TAY 
+$07/D94E: C8           INY 
+$07/D94F: 98           TYA 
+$07/D950: E8           INX 
+$07/D951: 9D C0 06     STA $06C0,X
+$07/D954: A8           TAY 
+$07/D955: C8           INY 
+$07/D956: 98           TYA 
+$07/D957: 9D E0 06     STA $06E0,X
+$07/D95A: 20 F2 DA     JSR $DAF2
+$07/D95D: A9 00        LDA #$00
+$07/D95F: 85 F2        STA $F2
+$07/D961: A5 04        LDA $04
+$07/D963: 0A           ASL 
+$07/D964: 26 F2        ROL $F2
+$07/D966: 0A           ASL 
+$07/D967: 26 F2        ROL $F2
+$07/D969: A9 FC        LDA #$FC
+$07/D96B: 85 F3        STA $F3
+$07/D96D: A5 0C        LDA $0C
+$07/D96F: 4A           LSR 
+$07/D970: 90 11        BCC $11 [$D983]
+$07/D972: 06 F2        ASL $F2
+$07/D974: 06 F2        ASL $F2
+$07/D976: 06 F2        ASL $F2
+$07/D978: 06 F2        ASL $F2
+$07/D97A: 38           SEC 
+$07/D97B: 26 F3        ROL $F3
+$07/D97D: 26 F3        ROL $F3
+$07/D97F: 26 F3        ROL $F3
+$07/D981: 26 F3        ROL $F3
+$07/D983: A5 0E        LDA $0E
+$07/D985: 4A           LSR 
+$07/D986: 90 09        BCC $09 [$D991]
+$07/D988: 06 F2        ASL $F2
+$07/D98A: 06 F2        ASL $F2
+$07/D98C: 38           SEC 
+$07/D98D: 26 F3        ROL $F3
+$07/D98F: 26 F3        ROL $F3
+$07/D991: BD 00 07     LDA $0700,X
+$07/D994: 25 F3        AND $F3
+$07/D996: 05 F2        ORA $F2
+$07/D998: 9D 00 07     STA $0700,X
+$07/D99B: A5 06        LDA $06
+$07/D99D: D0 02        BNE $02 [$D9A1]
+$07/D99F: 86 49        STX $49
+$07/D9A1: E6 0E        INC $0E
+$07/D9A3: E6 06        INC $06
+$07/D9A5: A5 06        LDA $06
+$07/D9A7: C9 08        CMP #$08
+$07/D9A9: F0 07        BEQ $07 [$D9B2]
+$07/D9AB: C9 10        CMP #$10
+$07/D9AD: F0 03        BEQ $03 [$D9B2]
+$07/D9AF: 4C 35 D9     JMP $D935
+$07/D9B2: 60           RTS 
+
+
+; whole lotta shit
+$07/DB4A: 20 27 D9     JSR $D927
+$07/DB4D: 20 1D D9     JSR $D91D
+$07/DB50: 20 E0 D9     JSR $D9E0
+$07/DB53: 20 C9 D9     JSR $D9C9
+$07/DB56: 20 F2 C2     JSR $C2F2
+$07/DB59: 60           RTS 
+
+
+$C1/B91C: 06 F0 00	;#$06 => 00F0 
+$C1/B91F: 06 F1 00	;#$06 => 00F1 
+$C1/B922: 03 F5 00 	;#$03 => 00F5
+$C1/B925: 08 00 06 	;#$08 => 0600
+$C1/B928: 08 01 06 	;#$08 => 0601
+$C1/B92B: 08 02 06 	;#$08 => 0602
+$C1/B92E: 08 03 06 	;#$08 => 0603
+$C1/B931: 08 04 06 	;#$08 => 0604
+$C1/B934: 08 05 06  	;#$08 => 0605
+$C1/B937: 08 06 06  	;#$08 => 0606
+$C1/B93A: 08 07 06  	;#$08 => 0607
+$C1/B93D: 08 08 06  	;#$08 => 0608
+$C1/B940: 08 09 06  	;#$08 => 0609
+
+$C1/B943: 08 71 00  	;#$08 => 0071 ; 
+
+$C1/B946: 03 F6 00  	;#$03 => 00F6
+$C1/B949: 00 00 00 	;EOF
+
+
+:LOAD STATS
+LDA #06
+
+LDA #$60
+STA $0A
+LDA #$00
+STA $0B
+
+LDA #$00
+STA $07
+
+LDA #$00
+STA $06
+
+:NEXT
+LDX $06
+LDA STATS,X
+BEQ DONE
+STA $09
+
+LDY $07
+LDA ($0A),Y
+
+LDY #$00
+STA ($08),Y
+
+INC $06
+
+INC $06
+INC $06
+
+INC $07
+
+JMP NEXT
+
+:DONE
+RTS 
+
+:LOAD FLAGS
+
+:STATS
+42 - Map X
+43 - Map Y
+53 - Tileset?
+71 - Level - 1 (Level 1 = 00)
+7A - MP
+7B - HP
+7C
+7D
+7E
+7F 
+80 - EXP decimal encoded 
+C0
+CC
+CE
+C1
+C8
+B3 - STR
+B4 - DEF
+B5 - AGI
+B6 - Equipped Sword
+B7 - Equipped Shield
+B8 - Equipped magic
+BF - Willow state
+00
+
+:FLAGS
+00 
+01
+02
+03
+04
+05
+06
+07
+08
+09
+
+$07/DEB2: A9 1C        LDA #$1C	  ; Set Map coordinates
+$07/DEB4: 85 43        STA $43	
+$07/DEB6: A9 0F        LDA #$0F
+$07/DEB8: 85 42        STA $42
+
+$07/DEBA: A9 18        LDA #$18	  ; Starting HP = 24
+$07/DEBC: 85 7B        STA $7B
+
+$07/DEBE: A9 00        LDA #$00	  
+$07/DEC0: 85 B3        STA $B3    ; STR = 0
+$07/DEC2: 85 B4        STA $B4    ; DEF = 0
+
+$07/DEC4: A9 0A        LDA #$0A
+$07/DEC6: 85 B5        STA $B5    ; AGI = 10
+
+$07/DEC8: A9 80        LDA #$80   ; Willow sprite?
+$07/DECA: 85 C0        STA $C0
+
+$07/DECC: A9 84        LDA #$84
+$07/DECE: 85 CC        STA $CC    ; Willow Y position (20-D0)
+
+$07/DED0: A9 90        LDA #$90    
+$07/DED2: 85 CE        STA $CE    ; Willow X position (18-E8)
+
+$07/DED4: A9 02        LDA #$02
+$07/DED6: 85 C1        STA $C1	  ; Willow Facing (00 = Back; 02 = Front)
+
+$07/DED8: A9 06        LDA #$06
+$07/DEDA: 85 C8        STA $C8	  ; Willow Stance (02 = Swing; 06 = Stand)
+
+$07/DEDC: A9 04        LDA #$04   
+$07/DEDE: 85 53        STA $53
+$07/DEE0: 20 DB C1     JSR $C1DB  ; Set Tileset
+
+$07/DEE3: A9 00        LDA #$00
+$07/DEE5: 20 BB C1     JSR $C1BB
+
+$07/DEE8: A9 04        LDA #$04
+$07/DEEA: 20 B0 C6     JSR $C6B0	; Set palette (BG)
+
+$07/DEED: A9 10        LDA #$10
+$07/DEEF: 20 B2 C6     JSR $C6B2	; Set palette 2 (Sprite/BG?)
+
+
+$07/C6B0: 85 2F        STA $2F
+$07/C6B2: 85 2E        STA $2E
+$07/C6B4: AA           TAX 
+$07/C6B5: BD 64 D0     LDA $D064,X
+$07/C6B8: 85 F2        STA $F2
+$07/C6BA: BD 04 D1     LDA $D104,X
+$07/C6BD: 85 F3        STA $F3
+$07/C6BF: A0 00        LDY #$00
+$07/C6C1: B1 F2        LDA ($F2),Y
+$07/C6C3: AA           TAX 
+$07/C6C4: C8           INY 
+$07/C6C5: B1 F2        LDA ($F2),Y
+$07/C6C7: 30 06        BMI $06 [$C6CF]
+$07/C6C9: 9D A0 06     STA $06A0,X
+$07/C6CC: E8           INX 
+$07/C6CD: D0 F5        BNE $F5 [$C6C4]
+$07/C6CF: 84 30        STY $30
+$07/C6D1: 60           RTS 
+
+
+$07/BAF1: 20 2D C1     JSR $C12D
+$07/BAF4: A9 68        LDA #$68
+$07/BAF6: 8D 04 02     STA $0204
+$07/BAF9: A9 83        LDA #$83
+$07/BAFB: 8D 05 02     STA $0205
+$07/BAFE: A9 01        LDA #$01
+$07/BB00: 8D 06 02     STA $0206
+$07/BB03: A9 50        LDA #$50
+$07/BB05: 8D 07 02     STA $0207
+$07/BB08: 20 2D C1     JSR $C12D
+$07/BB0B: A5 29        LDA $29
+$07/BB0D: 29 10        AND #$10
+$07/BB0F: D0 17        BNE $17 [$BB28]
+$07/BB11: A5 29        LDA $29
+$07/BB13: 29 2C        AND #$2C
+$07/BB15: F0 F1        BEQ $F1 [$BB08]
+$07/BB17: A2 68        LDX #$68
+$07/BB19: AD 04 02     LDA $0204
+$07/BB1C: C9 70        CMP #$70
+$07/BB1E: B0 02        BCS $02 [$BB22]
+$07/BB20: A2 78        LDX #$78
+$07/BB22: 8E 04 02     STX $0204
+$07/BB25: 4C 08 BB     JMP $BB08
+
+; After Pressing A/Start on COntinue/password
+$06/BB28: AD 04 02     LDA $0204
+$06/BB2B: C9 70        CMP #$70
+$06/BB2D: B0 55        BCS $55 [$BB84]
+
+COntinue
+$06/BB2F: A9 24        LDA #$24
+$06/BB31: 20 AD C4     JSR $C4AD
+$06/BB34: A9 3E        LDA #$3E
+$06/BB36: 20 3F C1     JSR $C13F  ;play success sound
+
+$06/BB39: A0 04        LDY #$04
+$06/BB3B: 20 4D C6     JSR $C64D  ;fade out
+
+$06/BB3E: 20 53 C1     JSR $C153
+$06/BB41: 20 64 C1     JSR $C164
+
+$06/BB44: A2 18        LDX #$18
+$06/BB46: BD 40 06     LDA $0640,X
+$06/BB49: 9D 10 01     STA $0110,X
+$06/BB4C: CA           DEX 
+$06/BB4D: 10 F7        BPL $F7 [$BB46]
+
+$06/BB4F: 20 B1 C2     JSR $C2B1
+$06/BB52: 20 90 C2     JSR $C290
+$06/BB55: 20 9F C3     JSR $C39F
+
+$06/BB58: A2 18        LDX #$18		;24 bytes 
+
+$06/BB5A: BD 10 01     LDA $0110,X	;copy from 0110 -> password area
+$06/BB5D: 9D 40 06     STA $0640,X
+$06/BB60: CA           DEX 
+$06/BB61: 10 F7        BPL $F7 [$BB5A]
+
+$06/BB63: 20 6E C1     JSR $C16E
+$06/BB66: 20 2D C1     JSR $C12D
+$06/BB69: 20 5D C1     JSR $C15D
+
+$06/BB6C: A9 12        LDA #$12		;18 characters in password
+$06/BB6E: 85 02        STA $02		
+$06/BB70: 20 74 B5     JSR $B574	;DO password CHECK
+
+$06/BB73: 90 06        BCC $06 [$BB7B]
+
+$06/BB75: 20 2D C1     JSR $C12D
+
+$06/BB78: 4C 75 BB     JMP $BB75
+
+$06/BB7B: 20 2D C1     JSR $C12D
+$06/BB7E: A2 FF        LDX #$FF
+$06/BB80: 9A           TXS 
+$06/BB81: 4C 3A DE     JMP $DE3A
+
+$08/C4AD: A4 D9        LDY $D9
+$08/C4AF: C0 10        CPY #$10
+$08/C4B1: B0 05        BCS $05 [$C4B8]
+$08/C4B3: 99 90 06     STA $0690,Y
+$08/C4B6: E6 D9        INC $D9
+$08/C4B8: 60           RTS 
+
+
+
+;SHOW PASSWORD
+$06/BB84: 20 2D C1     JSR $C12D
+
+$06/BB87: A0 04        LDY #$04		
+$06/BB89: 20 4D C6     JSR $C64D	;fade out
+
+$06/BB8C: A5 20        LDA $20
+$06/BB8E: 09 01        ORA #$01		;switch page
+$06/BB90: 85 20        STA $20
+
+$06/BB92: A9 0C        LDA #$0C
+$06/BB94: 20 AD C4     JSR $C4AD	; Store A in $0690 + $D9 if $D9 < #$10, $D9++
+
+$06/BB97: 20 9F C3     JSR $C39F	; set every 4th byte in $0200 to #$F8
+$06/BB9A: 20 2D C1     JSR $C12D	; refresh
+
+$06/BB9D: A9 05        LDA #$05		;palette
+$06/BB9F: A0 04        LDY #$04		;speed
+$06/BBA1: 20 36 C6     JSR $C636	;fade in
+
+$06/BBA4: 20 4C B6     JSR $B64C	; just calls B7E1
+
+$06/BBA7: 20 2D C1     JSR $C12D	;refresh
+$06/BBAA: A5 29        LDA $29	
+$06/BBAC: 29 10        AND #$10		;check if start was pressed
+$06/BBAE: F0 F7        BEQ $F7 [$BBA7]
+
+$06/BBB0: A0 04        LDY #$04		
+$06/BBB2: 20 4D C6     JSR $C64D	;fade out
+
+$06/BBB5: A5 20        LDA $20
+$06/BBB7: 29 FE        AND #$FE		; switch pages
+$06/BBB9: 85 20        STA $20
+
+$06/BBBB: A9 05        LDA #$05
+$06/BBBD: A0 04        LDY #$04
+$06/BBBF: 20 36 C6     JSR $C636	;fade in
+
+$06/BBC2: 4C F1 BA     JMP $BAF1	;back to continue screen
+
+=================================================================================
+; setup password screen?
+=================================================================================
+$07/B7E1: 20 26 B8     JSR $B826	; write password to screen
+
+$07/B7E4: A9 02        LDA #$02
+$07/B7E6: 85 04        STA $04
+$07/B7E8: A6 40        LDX $40
+$07/B7EA: A0 00        LDY #$00
+$07/B7EC: A9 24        LDA #$24
+$07/B7EE: 9D 00 05     STA $0500,X
+$07/B7F1: E8           INX 
+$07/B7F2: A9 CA        LDA #$CA
+$07/B7F4: 9D 00 05     STA $0500,X
+
+$07/B7F7: E8           INX 
+$07/B7F8: A9 0B        LDA #$0B
+$07/B7FA: 9D 00 05     STA $0500,X
+$07/B7FD: E8           INX 
+
+$07/B7FE: B9 58 06     LDA $0658,Y
+$07/B801: 9D 00 05     STA $0500,X
+$07/B804: E8           INX 
+$07/B805: C8           INY 
+$07/B806: C0 0B        CPY #$0B
+$07/B808: F0 06        BEQ $06 [$B810]	
+$07/B80A: C0 16        CPY #$16
+$07/B80C: F0 10        BEQ $10 [$B81E]	; out
+$07/B80E: D0 EE        BNE $EE [$B7FE]
+
+$07/B810: A9 25        LDA #$25
+$07/B812: 9D 00 05     STA $0500,X
+$07/B815: E8           INX 
+$07/B816: A9 0A        LDA #$0A
+$07/B818: 9D 00 05     STA $0500,X
+$07/B81B: 4C F7 B7     JMP $B7F7
+
+;out
+$07/B81E: 86 40        STX $40
+$07/B820: A9 00        LDA #$00
+$07/B822: 9D 00 05     STA $0500,X
+$07/B825: 60           RTS 
+
+; FROM B7E1
+$07/B826: A9 00        LDA #$00
+$07/B828: 85 04        STA $04		; clear counter temp
+$07/B82A: A8           TAY 		; to Y
+
+$07/B82B: A6 04        LDX $04		; 
+$07/B82D: BD 40 06     LDA $0640,X	
+$07/B830: 30 04        BMI $04 [$B836]	; if > 127 goto +
+
+$07/B832: AA           TAX 		; not
+$07/B833: BD DF B9     LDA $B9DF,X	; data is an offset into b9df
+
+;+
+$07/B836: 99 58 06     STA $0658,Y	
+$07/B839: E6 04        INC $04
+$07/B83B: C8           INY 
+$07/B83C: C0 03        CPY #$03
+$07/B83E: F0 0C        BEQ $0C [$B84C]
+$07/B840: C0 07        CPY #$07
+$07/B842: F0 08        BEQ $08 [$B84C]
+$07/B844: C0 0E        CPY #$0E
+$07/B846: F0 04        BEQ $04 [$B84C]
+$07/B848: C0 12        CPY #$12
+$07/B84A: D0 06        BNE $06 [$B852]
+
+$07/B84C: A9 80        LDA #$80
+$07/B84E: 99 58 06     STA $0658,Y
+$07/B851: C8           INY 
+
+$07/B852: A5 04        LDA $04
+$07/B854: C5 02        CMP $02
+$07/B856: 90 D3        BCC $D3 [$B82B]
+
+$07/B858: 60           RTS 
+
+
+
+
+
+; SETUP START/PASSWORD SCREEN
+$07/DDA2: A9 06        LDA #$06
+$07/DDA4: 20 78 C1     JSR $C178
+$07/DDA7: 20 53 C1     JSR $C153
+$07/DDAA: 20 64 C1     JSR $C164
+$07/DDAD: 20 B1 C2     JSR $C2B1
+$07/DDB0: 20 90 C2     JSR $C290
+$07/DDB3: 20 94 C3     JSR $C394
+$07/DDB6: 20 9F C3     JSR $C39F
+$07/DDB9: A9 1E        LDA #$1E
+$07/DDBB: 85 43        STA $43
+$07/DDBD: A9 1A        LDA #$1A
+$07/DDBF: 85 42        STA $42
+$07/DDC1: 20 F3 DE     JSR $DEF3
+$07/DDC4: A5 20        LDA $20
+$07/DDC6: 29 FE        AND #$FE
+$07/DDC8: 85 20        STA $20
+$07/DDCA: 8D 00 20     STA $2000
+$07/DDCD: A9 13        LDA #$13
+$07/DDCF: 20 DB C1     JSR $C1DB
+$07/DDD2: A9 1F        LDA #$1F
+$07/DDD4: 20 C2 C1     JSR $C1C2
+$07/DDD7: A9 8E        LDA #$8E
+$07/DDD9: 85 33        STA $33
+$07/DDDB: A9 E0        LDA #$E0
+$07/DDDD: 85 34        STA $34
+$07/DDDF: 20 2F C3     JSR $C32F
+$07/DDE2: 20 6E C1     JSR $C16E
+$07/DDE5: 20 5D C1     JSR $C15D
+$07/DDE8: A9 05        LDA #$05
+$07/DDEA: A0 04        LDY #$04
+$07/DDEC: 20 36 C6     JSR $C636
+$07/DDEF: 20 2D C1     JSR $C12D
+$07/DDF2: A9 68        LDA #$68
+$07/DDF4: 8D 04 02     STA $0204
+$07/DDF7: A9 83        LDA #$83
+$07/DDF9: 8D 05 02     STA $0205
+$07/DDFC: A9 01        LDA #$01
+$07/DDFE: 8D 06 02     STA $0206
+$07/DE01: A9 50        LDA #$50
+$07/DE03: 8D 07 02     STA $0207
+$07/DE06: 20 2D C1     JSR $C12D
+
+; MAIN LOOP
+$07/DE09: A5 29        LDA $29
+$07/DE0B: 29 10        AND #$10
+$07/DE0D: D0 17        BNE $17 [$DE26]
+$07/DE0F: A5 29        LDA $29
+$07/DE11: 29 2C        AND #$2C
+$07/DE13: F0 F1        BEQ $F1 [$DE06]
+$07/DE15: A2 68        LDX #$68
+$07/DE17: AD 04 02     LDA $0204
+$07/DE1A: C9 70        CMP #$70
+$07/DE1C: B0 02        BCS $02 [$DE20]
+$07/DE1E: A2 78        LDX #$78
+$07/DE20: 8E 04 02     STX $0204
+$07/DE23: 4C 06 DE     JMP $DE06
+$07/DE26: AD 04 02     LDA $0204
+$07/DE29: C9 70        CMP #$70
+$07/DE2B: 90 4A        BCC $4A [$DE77]
+$07/DE2D: A9 FF        LDA #$FF
+$07/DE2F: 85 D7        STA $D7
+$07/DE31: 20 71 B8     JSR $B871
+$07/DE34: 20 2D C1     JSR $C12D
+$07/DE37: 20 53 C1     JSR $C153
+
+$07/DE3A: 20 C9 9D     JSR $9DC9
+$07/DE3D: A9 00        LDA #$00
+$07/DE3F: 85 6C        STA $6C
+$07/DE41: 85 52        STA $52
+$07/DE43: 85 D6        STA $D6
+$07/DE45: 85 55        STA $55
+$07/DE47: A5 53        LDA $53
+$07/DE49: 20 DB C1     JSR $C1DB
+$07/DE4C: 20 2D C1     JSR $C12D
+$07/DE4F: A5 D5        LDA $D5
+$07/DE51: 85 D7        STA $D7
+$07/DE53: 8D 90 06     STA $0690
+$07/DE56: A9 01        LDA #$01
+$07/DE58: 85 D9        STA $D9
+$07/DE5A: 20 D7 DC     JSR $DCD7
+$07/DE5D: 20 2D C1     JSR $C12D
+$07/DE60: 20 F3 DE     JSR $DEF3
+$07/DE63: 20 2D C1     JSR $C12D
+$07/DE66: 20 00 F0     JSR $F000
+$07/DE69: 20 5D C1     JSR $C15D
+$07/DE6C: 20 2D C1     JSR $C12D
+$07/DE6F: 4C A9 DE     JMP $DEA9
+
+$07/DE72: 2D C1 4C     AND $4CC1
+$07/DE75: A9 DE        LDA #$DE
+$07/DE77: A9 24        LDA #$24
+$07/DE79: 20 AD C4     JSR $C4AD
+$07/DE7C: A9 3E        LDA #$3E
+$07/DE7E: 20 3F C1     JSR $C13F
+$07/DE81: 20 53 C1     JSR $C153
+$07/DE84: 20 64 C1     JSR $C164
+$07/DE87: 20 9F C3     JSR $C39F
+$07/DE8A: 20 B2 DE     JSR $DEB2
+$07/DE8D: 20 F3 DE     JSR $DEF3
+$07/DE90: 20 D7 DC     JSR $DCD7
+$07/DE93: 20 6E C1     JSR $C16E
+$07/DE96: 20 2D C1     JSR $C12D
+$07/DE99: 20 00 F0     JSR $F000
+$07/DE9C: 20 5D C1     JSR $C15D
+$07/DE9F: A9 04        LDA #$04
+$07/DEA1: 85 D5        STA $D5
+$07/DEA3: 20 AB C4     JSR $C4AB
+$07/DEA6: 20 2D C1     JSR $C12D
+$07/DEA9: 20 4C DF     JSR $DF4C
+$07/DEAC: 20 27 DF     JSR $DF27
+$07/DEAF: 4C A9 DE     JMP $DEA9
+$07/DEB2: A9 1C        LDA #$1C
+$07/DEB4: 85 43        STA $43
+$07/DEB6: A9 0F        LDA #$0F
+$07/DEB8: 85 42        STA $42
+$07/DEBA: A9 18        LDA #$18
+$07/DEBC: 85 7B        STA $7B
+$07/DEBE: A9 00        LDA #$00
+$07/DEC0: 85 B3        STA $B3
+$07/DEC2: 85 B4        STA $B4
+$07/DEC4: A9 0A        LDA #$0A
+$07/DEC6: 85 B5        STA $B5
+$07/DEC8: A9 80        LDA #$80
+$07/DECA: 85 C0        STA $C0
+$07/DECC: A9 84        LDA #$84
+$07/DECE: 85 CC        STA $CC
+$07/DED0: A9 90        LDA #$90
+$07/DED2: 85 CE        STA $CE
+$07/DED4: A9 02        LDA #$02
+$07/DED6: 85 C1        STA $C1
+$07/DED8: A9 06        LDA #$06
+$07/DEDA: 85 C8        STA $C8
+$07/DEDC: A9 04        LDA #$04
+$07/DEDE: 85 53        STA $53
+$07/DEE0: 20 DB C1     JSR $C1DB
+$07/DEE3: A9 00        LDA #$00
+$07/DEE5: 20 BB C1     JSR $C1BB
+$07/DEE8: A9 04        LDA #$04
+$07/DEEA: 20 B0 C6     JSR $C6B0
+$07/DEED: A9 10        LDA #$10
+$07/DEEF: 20 B2 C6     JSR $C6B2
+$07/DEF2: 60           RTS 
+
+
+
+
+STATESAVE - 
+
+08C3 - top-left of screen for nametable
+
+
+$08/C0F5: A9 00        LDA #$00
+$08/C0F7: 20 A7 C1     JSR $C1A7
+$08/C0FA: 20 00 80     JSR $8000
+$08/C0FD: A6 D9        LDX $D9
+$08/C0FF: F0 14        BEQ $14 [$C115]
+$08/C101: BD 8F 06     LDA $068F,X
+$08/C104: C9 FE        CMP #$FE
+$08/C106: B0 06        BCS $06 [$C10E]
+$08/C108: C9 FD        CMP #$FD
+$08/C10A: D0 02        BNE $02 [$C10E]
+$08/C10C: A0 8C        LDY #$8C
+$08/C10E: 20 03 80     JSR $8003
+$08/C111: C6 D9        DEC $D9
+$08/C113: D0 E8        BNE $E8 [$C0FD]
+$08/C115: A5 D6        LDA $D6
+$08/C117: F0 0F        BEQ $0F [$C128]
+$08/C119: C6 D6        DEC $D6
+$08/C11B: D0 0B        BNE $0B [$C128]
+$08/C11D: A5 D7        LDA $D7
+$08/C11F: C9 09        CMP #$09
+$08/C121: F0 05        BEQ $05 [$C128]
+$08/C123: A5 D5        LDA $D5
+$08/C125: 20 AB C4     JSR $C4AB
+$08/C128: A5 35        LDA $35
+$08/C12A: 4C A7 C1     JMP $C1A7
+$08/C12D: A9 01        LDA #$01
+$08/C12F: 85 22        STA $22
+$08/C131: A5 22        LDA $22
+$08/C133: D0 FC        BNE $FC [$C131]
+$08/C135: 60           RTS 
+
+;clear bits 3 & 4 on PPU Reg 1
+$08/C153: A5 21        LDA $21
+$08/C155: 29 E7        AND #$E7
+$08/C157: 85 21        STA $21
+$08/C159: 8D 01 20     STA $2001
+$08/C15C: 60           RTS 
+
+;clear bit 7 on PPU reg 0 
+$08/C164: A5 20        LDA $20
+$08/C166: 29 7F        AND #$7F
+$08/C168: 8D 00 20     STA $2000
+$08/C16B: 85 20        STA $20
+$08/C16D: 60           RTS 
+
+
+
+; set page?
+$08/C178: 85 26        STA $26 = update current page?
+
+; continue set page
+$08/C17A: 85 35        STA $35
+$08/C17C: A9 01        LDA #$01
+$08/C17E: 85 36        STA $36
+
+$08/C180: A5 35        LDA $35
+$08/C182: 20 A7 C1     JSR $C1A7
+
+$08/C185: A5 A9        LDA $A9
+$08/C187: F0 07        BEQ $07 [$C190]
+
+$08/C189: 20 F5 C0     JSR $C0F5
+
+$08/C18C: A9 00        LDA #$00
+$08/C18E: 85 A9        STA $A9		;clear $A9
+
+$08/C190: A9 00        LDA #$00
+$08/C192: 85 36        STA $36		;clear $36
+
+$08/C194: 60           RTS 
+
+$08/C195: A5 26        LDA $26		; get last page?
+$08/C197: 4C 7A C1     JMP $C17A	; continue set page
+
+$08/C19A: 48           PHA 		; save A
+$08/C19B: A5 36        LDA $36		; test $36
+$08/C19D: F0 07        BEQ $07 [$C1A6]	; zero, restore
+$08/C19F: 20 F4 C1     JSR $C1F4	; do something
+$08/C1A2: A9 00        LDA #$00		; clear out $36
+$08/C1A4: 85 36        STA $36		
+$08/C1A6: 68           PLA 		; restore A before....
+
+; Set mapper page?
+$08/C1A7: 8D FF EF     STA $EFFF
+$08/C1AA: 4A           LSR 
+$08/C1AB: 8D FF EF     STA $EFFF
+$08/C1AE: 4A           LSR 
+$08/C1AF: 8D FF EF     STA $EFFF
+$08/C1B2: 4A           LSR 
+$08/C1B3: 8D FF EF     STA $EFFF
+$08/C1B6: 4A           LSR 
+$08/C1B7: 8D FF EF     STA $EFFF
+$08/C1BA: 60           RTS 
+
+
+
+$08/C2B1: A2 08        LDX #$08
+$08/C2B3: A0 00        LDY #$00
+$08/C2B5: 85 10        STA $10
+$08/C2B7: AD 02 20     LDA $2002	; reset hit/vblank
+$08/C2BA: A9 20        LDA #$20
+$08/C2BC: 8D 06 20     STA $2006	
+$08/C2BF: 8C 06 20     STY $2006	; PPU memory now $2000
+
+$08/C2C2: A9 20        LDA #$20
+$08/C2C4: 8D 07 20     STA $2007	; write char $20 to screen
+$08/C2C7: 88           DEY 		; down 1 char
+$08/C2C8: D0 F8        BNE $F8 [$C2C2]	; write 255 bytes?
+
+$08/C2CA: E6 00        INC $00
+$08/C2CC: CA           DEX 		; 8 pages?
+$08/C2CD: D0 F3        BNE $F3 [$C2C2]
+$08/C2CF: 60           RTS 
+
+
+
+; write string to VRAM
+; byte 1 & 2 = address in vram
+; byte 3 = length
+
+$08/C32F: AD 02 20     LDA $2002	; clear vblank/hit
+$08/C332: A0 00        LDY #$00		; init Y
+$08/C334: B1 33        LDA ($33),Y	; 1st byte is PPU address HI
+
+; all over again?
+$08/C336: 48           PHA 		; save
+$08/C337: 8D 06 20     STA $2006	; poke it	
+$08/C33A: C8           INY 		
+$08/C33B: B1 33        LDA ($33),Y	; 2nd byte is PPU address LO
+$08/C33D: 8D 06 20     STA $2006	; poke it
+$08/C340: C8           INY 
+$08/C341: B1 33        LDA ($33),Y	; 3rd byte 
+$08/C343: 0A           ASL 		; * 2
+$08/C344: 48           PHA 		; save
+
+$08/C345: A5 20        LDA $20		; ppu reg 0 stats
+$08/C347: 09 04        ORA #$04		; enable vertical write
+$08/C349: B0 02        BCS $02 [$C34D]	; 
+$08/C34B: 29 FB        AND #$FB		; no, disable it :(
+$08/C34D: 8D 00 20     STA $2000	; yes! update reg
+
+$08/C350: 68           PLA 		; get 3rd byte * 2
+$08/C351: 0A           ASL 		; * 2
+$08/C352: 08           PHP 		; save flags
+$08/C353: 90 03        BCC $03 [$C358]
+
+$08/C355: 09 02        ORA #$02
+$08/C357: C8           INY 
+
+$08/C358: 28           PLP 		; restore flags
+$08/C359: 18           CLC 
+$08/C35A: D0 01        BNE $01 [$C35D]
+
+$08/C35C: 38           SEC 
+
+$08/C35D: 6A           ROR 
+$08/C35E: 4A           LSR 
+$08/C35F: AA           TAX 		; X = number of bytes to repeat?
+
+;more
+$08/C360: B0 01        BCS $01 [$C363]	; C=1? redo previous char
+$08/C362: C8           INY 		; next character
+
+$08/C363: B1 33        LDA ($33),Y	
+$08/C365: 8D 07 20     STA $2007	; write to VRAM
+$08/C368: CA           DEX 		; countdown
+$08/C369: D0 F5        BNE $F5 [$C360]	; more
+
+$08/C36B: 68           PLA 		; get that second byte
+$08/C36C: C9 3F        CMP #$3F		; 63? 
+$08/C36E: D0 0C        BNE $0C [$C37C]
+
+$08/C370: 8D 06 20     STA $2006
+$08/C373: 8E 06 20     STX $2006
+$08/C376: 8E 06 20     STX $2006
+$08/C379: 8E 06 20     STX $2006
+
+$08/C37C: C8           INY 
+$08/C37D: B1 33        LDA ($33),Y	; get next byte
+$08/C37F: 10 B5        BPL $B5 [$C336]	; one more string? #$FF = EOF
+
+$08/C381: A9 00        LDA #$00
+$08/C383: 85 34        STA $34		; clear lo address
+
+$08/C385: 60           RTS 
+
+
+; Main INIT
+
+$07/DD98: E0 E8        CPX #$E8
+
+$07/DD9A: A9 00        LDA #$00
+$07/DD9C: 20 78 C1     JSR $C178	; Set current page to 00 
+
+$07/DD9F: 20 E0 B3     JSR $B3E0	; Do intro
+
+$07/DDA2: A9 06        LDA #$06
+$07/DDA4: 20 78 C1     JSR $C178	; Set current page to 06 
+
+$07/DDA7: 20 53 C1     JSR $C153	; Blank out screen
+
+$07/DDAA: 20 64 C1     JSR $C164	; disable vblank
+$07/DDAD: 20 B1 C2     JSR $C2B1	; clear screen (PPU mem)
+$07/DDB0: 20 90 C2     JSR $C290
+$07/DDB3: 20 94 C3     JSR $C394	; clear 0300
+$07/DDB6: 20 9F C3     JSR $C39F	; set 4th of 0200 to #$F8
+
+
+$07/DDB9: A9 1E        LDA #$1E
+$07/DDBB: 85 43        STA $43
+$07/DDBD: A9 1A        LDA #$1A
+$07/DDBF: 85 42        STA $42
+$07/DDC1: 20 F3 DE     JSR $DEF3	; draw background
+
+$07/DDC4: A5 20        LDA $20		; clear bit 0 of PPU reg 0
+$07/DDC6: 29 FE        AND #$FE		;
+$07/DDC8: 85 20        STA $20		; that leaves name table 0/2 enabled.
+$07/DDCA: 8D 00 20     STA $2000	;
+
+$07/DDCD: A9 13        LDA #$13
+$07/DDCF: 20 DB C1     JSR $C1DB	; set 2nd VROM page select
+
+$07/DDD2: A9 1F        LDA #$1F
+$07/DDD4: 20 C2 C1     JSR $C1C2	; set VROM page select
+
+$07/DDD7: A9 8E        LDA #$8E
+$07/DDD9: 85 33        STA $33
+$07/DDDB: A9 E0        LDA #$E0
+$07/DDDD: 85 34        STA $34
+$07/DDDF: 20 2F C3     JSR $C32F	; Write string at $E08E to VRAM
+
+$07/DDE2: 20 6E C1     JSR $C16E
+$07/DDE5: 20 5D C1     JSR $C15D
+
+$07/DDE8: A9 05        LDA #$05
+$07/DDEA: A0 04        LDY #$04
+$07/DDEC: 20 36 C6     JSR $C636	;FADE IN
+
+$07/DDEF: 20 2D C1     JSR $C12D
+
+$07/DDF2: A9 68        LDA #$68
+$07/DDF4: 8D 04 02     STA $0204
+
+$07/DDF7: A9 83        LDA #$83
+$07/DDF9: 8D 05 02     STA $0205
+
+$07/DDFC: A9 01        LDA #$01
+$07/DDFE: 8D 06 02     STA $0206
+
+$07/DE01: A9 50        LDA #$50
+$07/DE03: 8D 07 02     STA $0207
+
+;Joystick Loop - slect START / PASS WORD
+$07/DE06: 20 2D C1     JSR $C12D	;Update screen?
+$07/DE09: A5 29        LDA $29
+$07/DE0B: 29 10        AND #$10
+$07/DE0D: D0 17        BNE $17 [$DE26]	;If user pressed START
+
+$07/DE0F: A5 29        LDA $29
+$07/DE11: 29 2C        AND #$2C
+$07/DE13: F0 F1        BEQ $F1 [$DE06]	;no user input, LOOP
+
+;Make sure 2 selections are possible
+$07/DE15: A2 68        LDX #$68	
+$07/DE17: AD 04 02     LDA $0204	
+$07/DE1A: C9 70        CMP #$70		
+$07/DE1C: B0 02        BCS $02 [$DE20]
+$07/DE1E: A2 78        LDX #$78
+$07/DE20: 8E 04 02     STX $0204	
+$07/DE23: 4C 06 DE     JMP $DE06	;Loop
+
+
+
+$07/DE26: AD 04 02     LDA $0204
+$07/DE29: C9 70        CMP #$70
+$07/DE2B: 90 4A        BCC $4A [$DE77]
+
+$07/DE2D: A9 FF        LDA #$FF
+$07/DE2F: 85 D7        STA $D7
+$07/DE31: 20 71 B8     JSR $B871
+$07/DE34: 20 2D C1     JSR $C12D
+$07/DE37: 20 53 C1     JSR $C153
+$07/DE3A: 20 C9 9D     JSR $9DC9
+$07/DE3D: A9 00        LDA #$00
+$07/DE3F: 85 6C        STA $6C
+$07/DE41: 85 52        STA $52
+$07/DE43: 85 D6        STA $D6
+$07/DE45: 85 55        STA $55
+$07/DE47: A5 53        LDA $53
+$07/DE49: 20 DB C1     JSR $C1DB
+$07/DE4C: 20 2D C1     JSR $C12D
+$07/DE4F: A5 D5        LDA $D5
+$07/DE51: 85 D7        STA $D7
+$07/DE53: 8D 90 06     STA $0690
+$07/DE56: A9 01        LDA #$01
+$07/DE58: 85 D9        STA $D9
+$07/DE5A: 20 D7 DC     JSR $DCD7
+$07/DE5D: 20 2D C1     JSR $C12D
+$07/DE60: 20 F3 DE     JSR $DEF3
+$07/DE63: 20 2D C1     JSR $C12D
+$07/DE66: 20 00 F0     JSR $F000
+$07/DE69: 20 5D C1     JSR $C15D
+$07/DE6C: 20 2D C1     JSR $C12D
+$07/DE6F: 4C A9 DE     JMP $DEA9
+$07/DE72: 2D C1 4C     AND $4CC1
+$07/DE75: A9 DE        LDA #$DE
+$07/DE77: A9 24        LDA #$24
+$07/DE79: 20 AD C4     JSR $C4AD
+$07/DE7C: A9 3E        LDA #$3E
+$07/DE7E: 20 3F C1     JSR $C13F
+$07/DE81: 20 53 C1     JSR $C153
+$07/DE84: 20 64 C1     JSR $C164
+$07/DE87: 20 9F C3     JSR $C39F
+$07/DE8A: 20 B2 DE     JSR $DEB2
+$07/DE8D: 20 F3 DE     JSR $DEF3
+$07/DE90: 20 D7 DC     JSR $DCD7
+$07/DE93: 20 6E C1     JSR $C16E
+$07/DE96: 20 2D C1     JSR $C12D
+$07/DE99: 20 00 F0     JSR $F000
+$07/DE9C: 20 5D C1     JSR $C15D
+$07/DE9F: A9 04        LDA #$04
+$07/DEA1: 85 D5        STA $D5
+$07/DEA3: 20 AB C4     JSR $C4AB
+$07/DEA6: 20 2D C1     JSR $C12D
+$07/DEA9: 20 4C DF     JSR $DF4C
+$07/DEAC: 20 27 DF     JSR $DF27
+$07/DEAF: 4C A9 DE     JMP $DEA9
+
+$07/DEB2: A9 1C        LDA #$1C
+$07/DEB4: 85 43        STA $43
+$07/DEB6: A9 0F        LDA #$0F
+$07/DEB8: 85 42        STA $42
+
+$07/DEBA: A9 18        LDA #$18
+$07/DEBC: 85 7B        STA $7B
+$07/DEBE: A9 00        LDA #$00
+$07/DEC0: 85 B3        STA $B3
+$07/DEC2: 85 B4        STA $B4
+$07/DEC4: A9 0A        LDA #$0A
+$07/DEC6: 85 B5        STA $B5
+$07/DEC8: A9 80        LDA #$80
+$07/DECA: 85 C0        STA $C0
+$07/DECC: A9 84        LDA #$84
+$07/DECE: 85 CC        STA $CC
+$07/DED0: A9 90        LDA #$90
+$07/DED2: 85 CE        STA $CE
+$07/DED4: A9 02        LDA #$02
+$07/DED6: 85 C1        STA $C1
+$07/DED8: A9 06        LDA #$06
+$07/DEDA: 85 C8        STA $C8
+$07/DEDC: A9 04        LDA #$04
+$07/DEDE: 85 53        STA $53
+$07/DEE0: 20 DB C1     JSR $C1DB
+$07/DEE3: A9 00        LDA #$00
+$07/DEE5: 20 BB C1     JSR $C1BB
+$07/DEE8: A9 04        LDA #$04
+$07/DEEA: 20 B0 C6     JSR $C6B0
+$07/DEED: A9 10        LDA #$10
+$07/DEEF: 20 B2 C6     JSR $C6B2
+$07/DEF2: 60           RTS 
+
+
+
+#2
+$08/D91D: A9 08        LDA #$08
+$08/D91F: 85 06        STA $06		; $06 = 08
+$08/D921: 20 32 D9     JSR $D932
+$08/D924: 4C B3 D9     JMP $D9B3
+
+;#1
+$08/D927: A9 00        LDA #$00
+$08/D929: 85 0E        STA $0E		; clear $0E
+$08/D92B: 20 26 DA     JSR $DA26	; calculate HI address
+
+$08/D92E: A9 00        LDA #$00		
+$08/D930: 85 06        STA $06		; clear $06
+
+$08/D932: 20 52 DA     JSR $DA52
+
+;loop
+$08/D935: 20 A4 DA     JSR $DAA4	; fetch char data
+$08/D938: 85 04        STA $04		; save 04 = char data
+$08/D93A: A5 06        LDA $06		; 
+$08/D93C: 0A           ASL 		;
+$08/D93D: AA           TAX 		; X = $06 * 2
+$08/D93E: A5 04        LDA $04		; 
+$08/D940: 29 3F        AND #$3F		; 
+$08/D942: 0A           ASL 		; 
+$08/D943: 0A           ASL 		; lower 7 bits of $04 * 4
+$08/D944: 9D C0 06     STA $06C0,X	; save
+
+$08/D947: A8           TAY 
+$08/D948: C8           INY 
+$08/D949: 98           TYA 		; A = A + 1
+$08/D94A: 9D E0 06     STA $06E0,X	; mirror here  plus 1?
+$08/D94D: A8           TAY 
+$08/D94E: C8           INY 
+$08/D94F: 98           TYA 		; A = A + 1
+$08/D950: E8           INX 
+$08/D951: 9D C0 06     STA $06C0,X	; 
+$08/D954: A8           TAY 
+$08/D955: C8           INY 
+$08/D956: 98           TYA 
+$08/D957: 9D E0 06     STA $06E0,X	 ; here too
+
+$08/D95A: 20 F2 DA     JSR $DAF2
+
+$08/D95D: A9 00        LDA #$00
+$08/D95F: 85 F2        STA $F2
+
+$08/D961: A5 04        LDA $04
+$08/D963: 0A           ASL 
+$08/D964: 26 F2        ROL $F2
+$08/D966: 0A           ASL 
+$08/D967: 26 F2        ROL $F2
+
+$08/D969: A9 FC        LDA #$FC
+$08/D96B: 85 F3        STA $F3
+
+$08/D96D: A5 0C        LDA $0C
+$08/D96F: 4A           LSR 
+$08/D970: 90 11        BCC $11 [$D983] ;+
+
+$08/D972: 06 F2        ASL $F2
+$08/D974: 06 F2        ASL $F2
+$08/D976: 06 F2        ASL $F2
+$08/D978: 06 F2        ASL $F2
+$08/D97A: 38           SEC 
+$08/D97B: 26 F3        ROL $F3
+$08/D97D: 26 F3        ROL $F3
+$08/D97F: 26 F3        ROL $F3
+$08/D981: 26 F3        ROL $F3
+
+;+
+$08/D983: A5 0E        LDA $0E
+$08/D985: 4A           LSR 
+$08/D986: 90 09        BCC $09 [$D991] ;+
+$08/D988: 06 F2        ASL $F2
+$08/D98A: 06 F2        ASL $F2
+$08/D98C: 38           SEC 
+$08/D98D: 26 F3        ROL $F3
+$08/D98F: 26 F3        ROL $F3
+
+;+
+$08/D991: BD 00 07     LDA $0700,X
+$08/D994: 25 F3        AND $F3
+$08/D996: 05 F2        ORA $F2
+$08/D998: 9D 00 07     STA $0700,X
+$08/D99B: A5 06        LDA $06
+$08/D99D: D0 02        BNE $02 [$D9A1] ;+
+$08/D99F: 86 49        STX $49
+
+;+
+$08/D9A1: E6 0E        INC $0E		
+$08/D9A3: E6 06        INC $06
+$08/D9A5: A5 06        LDA $06
+$08/D9A7: C9 08        CMP #$08
+$08/D9A9: F0 07        BEQ $07 [$D9B2]	;exit 
+$08/D9AB: C9 10        CMP #$10
+$08/D9AD: F0 03        BEQ $03 [$D9B2]	;exit
+$08/D9AF: 4C 35 D9     JMP $D935	;loop
+
+$08/D9B2: 60           RTS 
+
+;from #2
+$08/D9B3: A2 00        LDX #$00		; clear X
+$08/D9B5: A0 00        LDY #$00		; and Y
+$08/D9B7: 24 4A        BIT $4A		; test $4A
+$08/D9B9: 10 03        BPL $03 [$D9BE]	; > 127
+$08/D9BB: E8           INX 		; inc X
+$08/D9BC: A0 20        LDY #$20		; set Y
+
+$08/D9BE: A5 47        LDA $47		; read		
+$08/D9C0: 18           CLC 		
+$08/D9C1: 7D 78 DB     ADC $DB78,X	; add
+$08/D9C4: 85 47        STA $47		
+$08/D9C6: 4C 0D DB     JMP $DB0D	; write to RAM
+
+#4
+$08/D9C9: A2 00        LDX #$00
+$08/D9CB: A0 20        LDY #$20
+$08/D9CD: 24 4A        BIT $4A
+$08/D9CF: 10 03        BPL $03 [$D9D4] ;+
+$08/D9D1: A0 00        LDY #$00
+$08/D9D3: E8           INX 
+
+;+
+$08/D9D4: A5 47        LDA $47
+$08/D9D6: 18           CLC 
+$08/D9D7: 7D 7A DB     ADC $DB7A,X
+$08/D9DA: 85 47        STA $47
+$08/D9DC: 20 0D DB     JSR $DB0D
+$08/D9DF: 60           RTS 
+
+
+;#3
+$08/D9E0: A6 40        LDX $40
+$08/D9E2: A0 23        LDY #$23
+$08/D9E4: A5 49        LDA $49
+$08/D9E6: 29 08        AND #$08
+$08/D9E8: F0 02        BEQ $02 [$D9EC] ;+
+$08/D9EA: A0 27        LDY #$27
+
+;+
+$08/D9EC: 98           TYA 
+$08/D9ED: 9D 00 05     STA $0500,X
+$08/D9F0: E8           INX 
+$08/D9F1: A5 49        LDA $49
+$08/D9F3: 48           PHA 
+$08/D9F4: 29 07        AND #$07
+$08/D9F6: 85 F2        STA $F2
+$08/D9F8: 68           PLA 
+$08/D9F9: 29 F0        AND #$F0
+$08/D9FB: 4A           LSR 
+$08/D9FC: 18           CLC 
+$08/D9FD: 65 F2        ADC $F2
+$08/D9FF: 18           CLC 
+$08/DA00: 69 C0        ADC #$C0
+$08/DA02: 9D 00 05     STA $0500,X
+$08/DA05: E8           INX 
+$08/DA06: A9 08        LDA #$08
+$08/DA08: 9D 00 05     STA $0500,X
+$08/DA0B: 85 F3        STA $F3
+$08/DA0D: E8           INX 
+$08/DA0E: A4 49        LDY $49
+
+;-
+$08/DA10: B9 00 07     LDA $0700,Y
+$08/DA13: 9D 00 05     STA $0500,X
+$08/DA16: E8           INX 
+$08/DA17: C8           INY 
+$08/DA18: C6 F3        DEC $F3
+$08/DA1A: D0 F4        BNE $F4 [$DA10] ;-
+
+$08/DA1C: 84 49        STY $49
+$08/DA1E: A9 00        LDA #$00
+$08/DA20: 9D 00 05     STA $0500,X
+$08/DA23: 86 40        STX $40
+$08/DA25: 60           RTS 
+
+;calculate $48 
+= 23 - 20 in 16 steps? 4 counts per number?
+$08/DA26: A5 0E        LDA $0E		; = 0?
+$08/DA28: 0A           ASL 		; * 2
+$08/DA29: 85 F2        STA $F2		; => F2
+$08/DA2B: A9 00        LDA #$00		
+$08/DA2D: 85 F3        STA $F3		; clear $F3
+$08/DA2F: A5 0C        LDA $0C		; = counter (starts with $0E) 
+0000 1110
+$08/DA31: 0A           ASL 
+0001 1100
+$08/DA32: 0A           ASL 
+0011 1000
+$08/DA33: 0A           ASL 		; ignore first 3 bits
+0111 0000
+$08/DA34: 0A           ASL 		; $0C * 16 
+1110 0000
+$08/DA35: 26 F3        ROL $F3
+0000 0000
+$08/DA37: 0A           ASL 		; carry into $F3
+1100 0000
+$08/DA38: 26 F3        ROL $F3
+0000 0001
+$08/DA3A: 0A           ASL 		; = 80
+1000 0000
+$08/DA3B: 26 F3        ROL $F3		; carry into $F3  = $02
+0000 0011
+
+$08/DA3D: 18           CLC 
+$08/DA3E: 65 F2        ADC $F2	
+$08/DA40: 85 47        STA $47		; $47 = 
+
+$08/DA42: A5 0F        LDA $0F		; map X
+$08/DA44: 4A           LSR 		; put first bit into carry
+$08/DA45: A2 20        LDX #$20		; ctr = 32
+$08/DA47: 90 02        BCC $02 [$DA4B]	; is map X even or odd?
+$08/DA49: A2 24        LDX #$24		; odd, change ctr = 36
+
+$08/DA4B: 8A           TXA 		; even
+$08/DA4C: 18           CLC 		; get rid of carry bit
+$08/DA4D: 65 F3        ADC $F3		
+$08/DA4F: 85 48        STA $48		; $48 = $F3 + 32 / 36 
+$08/DA51: 60           RTS 
+
+=========================================================================
+; set where to fetch char data (44/45)
+=========================================================================
+$08/DA52: A9 00        LDA #$00
+$08/DA54: 85 01        STA $01		; clear $01
+$08/DA56: A5 0F        LDA $0F		; map X
+$08/DA58: 0A           ASL 		; * 2
+$08/DA59: 85 F2        STA $F2		; $F2 = map X * 2
+
+$08/DA5B: A5 0D        LDA $0D		; map Y
+$08/DA5D: 0A           ASL 		; 
+$08/DA5E: 0A           ASL 		; ; ignore upper two bits
+$08/DA5F: 0A           ASL 		; bit 5 now in carry
+$08/DA60: 26 01        ROL $01		; carry into $01
+$08/DA62: 0A           ASL 		; bit 4 now in carry
+$08/DA63: 26 01        ROL $01		; carry into $01
+$08/DA65: 0A           ASL 		; bit 3 now in carry
+$08/DA66: 26 01        ROL $01		; carry into $01
+$08/DA68: 0A           ASL 		; bit 2 now in carry
+$08/DA69: 26 01        ROL $01		; carry into $01
+$08/DA6B: 18           CLC 		; $01 = bit 5-2 of 42 
+
+$08/DA6C: 65 F2        ADC $F2
+$08/DA6E: 85 00        STA $00		; $00 = lower 2 bits * 32 + $F2
+
+$08/DA70: A5 01        LDA $01		; bit 5-2
+$08/DA72: 18           CLC 
+$08/DA73: 69 B8        ADC #$B8		; 
+
+$08/DA75: 85 01        STA $01		; $01 = + #$B8
+
+$08/DA77: A9 03        LDA #$03		
+$08/DA79: 20 7A C1     JSR $C17A	; set ROM page to 3
+
+$08/DA7C: A0 00        LDY #$00
+$08/DA7E: 84 45        STY $45		; clear $45
+$08/DA80: B1 00        LDA ($00),Y	; BFB4
+$08/DA82: 0A           ASL 		
+$08/DA83: 0A           ASL 		; * 4
+$08/DA84: 85 46        STA $46		; into $46
+
+$46 = $04 * 4 = $10
+
+$08/DA86: C8           INY 		; next byte
+$08/DA87: B1 00        LDA ($00),Y	; BFB5
+$08/DA89: 0A           ASL 
+$08/DA8A: 26 45        ROL $45		
+$08/DA8C: 0A           ASL 
+$08/DA8D: 26 45        ROL $45
+$08/DA8F: 0A           ASL 
+$08/DA90: 26 45        ROL $45
+$08/DA92: 0A           ASL 
+$08/DA93: 26 45        ROL $45
+$08/DA95: 0A           ASL 
+$08/DA96: 26 45        ROL $45
+$08/DA98: 0A           ASL 
+$08/DA99: 26 45        ROL $45		; $45 is upper 6 bytes of data 
+$08/DA9B: 85 44        STA $44		; $44 is lower 2 bytes of data  * 64
+$08/DA9D: A5 45        LDA $45		
+$08/DA9F: 18           CLC 
+$08/DAA0: 69 80        ADC #$80		
+$08/DAA2: 85 45        STA $45		; $45 = $45 + $80 
+
+BFB5 = 3A
+0011 1010
+
+$45 = 0E
+0000 1110
+
+$45 = 8E
+
+$44 = 80
+1000 0000
+
+
+$04/BFB4: 04 3A 
+$04/BFB6: 04 3B 
+$04/BFB8: 01 3C 
+$04/BFBA: 05 3D 
+$04/BFBC: 05 3E 
+$04/BFBE: 04 3F 
+
+
+=========================================================================
+; fetch CHAR DATA
+=========================================================================
+
+$08/DAA4: 20 B9 DA     JSR $DAB9
+$08/DAA7: A0 00        LDY #$00
+$08/DAA9: A5 0C        LDA $0C
+$08/DAAB: 4A           LSR 
+$08/DAAC: 90 02        BCC $02 [$DAB0]
+$08/DAAE: C8           INY 
+$08/DAAF: C8           INY 
+
+$08/DAB0: A5 0E        LDA $0E
+$08/DAB2: 4A           LSR 
+$08/DAB3: 90 01        BCC $01 [$DAB6]
+$08/DAB5: C8           INY 
+
+$08/DAB6: B1 04        LDA ($04),Y	; ($04) = $A0OC, $A3FB
+$08/DAB8: 60           RTS 
+
+
+$08/DAB9: A2 02        LDX #$02		; initially page 2
+$08/DABB: A5 0D        LDA $0D		; map y = $43
+$08/DABD: C9 1D        CMP #$1D		
+$08/DABF: 90 01        BCC $01 [$DAC2]  ; map y < $1D
+$08/DAC1: E8           INX 		; nope, we're in-game, gfx comes from page 3
+
+$08/DAC2: 8A           TXA 		; ROM page
+$08/DAC3: 20 7A C1     JSR $C17A	; change ROM page
+
+$08/DAC6: A9 00        LDA #$00
+$08/DAC8: 85 05        STA $05		; clear $05 (HI address)
+
+$08/DACA: A5 0E        LDA $0E
+$08/DACC: 4A           LSR 
+$08/DACD: 85 F2        STA $F2		; $F2 = $0E / 2
+
+$08/DACF: A5 0C        LDA $0C		; counter
+$08/DAD1: 4A           LSR 		; 
+$08/DAD2: 0A           ASL 		; get rid of bit 1 
+$08/DAD3: 0A           ASL 		;
+$08/DAD4: 0A           ASL 		; * 4
+$08/DAD5: 65 F2        ADC $F2		; + $f2
+$08/DAD7: A8           TAY 		; into Y - now our offset
+
+$08/DAD8: B1 44        LDA ($44),Y	; ($44) = $8E80 + Y = $8EB8
+
+0000 0011
+
+$08/DADA: 0A           ASL 		; 
+$08/DADB: 26 05        ROL $05		; 
+$08/DADD: 0A           ASL 		; 
+$08/DADE: 26 05        ROL $05		; $05 = upper two bits of data
+
+$05 0000 0000 = 00
+
+$08/DAE0: 85 04        STA $04		; $04 is current A
+
+$04 0000 1100 = 0C
+
+$08/DAE2: A5 05        LDA $05
+$08/DAE4: 18           CLC 		; clear up
+$08/DAE5: 69 90        ADC #$90		; always > #$90
+
+1001 0000
+
+$08/DAE7: 18           CLC 
+$08/DAE8: 65 46        ADC $46		; also + $46 (header byte * 2?)
+$08/DAEA: 85 05        STA $05		; into $05
+
+$05 1010 0000 = A0
+
+
+$08/DAEC: A9 03        LDA #$03
+$08/DAEE: 20 7A C1     JSR $C17A	; re-set rom page
+
+$08/DAF1: 60           RTS 
+
+
+
+
+
+
+$08/DAF2: A5 0C        LDA $0C
+$08/DAF4: 4A           LSR 
+$08/DAF5: 0A           ASL 
+$08/DAF6: 0A           ASL 
+$08/DAF7: 0A           ASL 
+$08/DAF8: 0A           ASL 
+$08/DAF9: AA           TAX 
+
+$08/DAFA: A5 0F        LDA $0F		; from $42
+$08/DAFC: 4A           LSR 
+$08/DAFD: 90 04        BCC $04 [$DB03]
+$08/DAFF: 8A           TXA 
+$08/DB00: 69 07        ADC #$07
+$08/DB02: AA           TAX 
+$08/DB03: 86 F2        STX $F2
+$08/DB05: A5 0E        LDA $0E
+$08/DB07: 4A           LSR 
+$08/DB08: 18           CLC 
+$08/DB09: 65 F2        ADC $F2
+$08/DB0B: AA           TAX 
+$08/DB0C: 60           RTS 
+
+; encaps and write block from 6c0
+$08/DB0D: A6 40        LDX $40		; VRAM offset
+$08/DB0F: A5 48        LDA $48		; get HI address
+$08/DB11: 9D 00 05     STA $0500,X	 
+$08/DB14: E8           INX 
+$08/DB15: A5 47        LDA $47		; get LO address
+$08/DB17: 9D 00 05     STA $0500,X	; 
+$08/DB1A: E8           INX 
+$08/DB1B: A9 20        LDA #$20		; number of bytes to copy
+$08/DB1D: 9D 00 05     STA $0500,X	; 
+$08/DB20: 85 F2        STA $F2		; $F2 is my counter
+$08/DB22: E8           INX 
+
+;more
+$08/DB23: B9 C0 06     LDA $06C0,Y	; transfer point
+$08/DB26: 9D 00 05     STA $0500,X	; copy
+$08/DB29: E8           INX 
+$08/DB2A: C8           INY 
+$08/DB2B: C6 F2        DEC $F2		; dec counter
+
+$08/DB2D: D0 F4        BNE $F4 [$DB23]  ; -more 
+
+$08/DB2F: A9 00        LDA #$00		; 
+$08/DB31: 9D 00 05     STA $0500,X	; write an EOF
+$08/DB34: 86 40        STX $40		; save the offset
+$08/DB36: 60           RTS 
+
+
+
+$08/DB4A: 20 27 D9     JSR $D927	; #1
+$08/DB4D: 20 1D D9     JSR $D91D	; #2
+$08/DB50: 20 E0 D9     JSR $D9E0	; #3
+$08/DB53: 20 C9 D9     JSR $D9C9	; #4
+$08/DB56: 20 F2 C2     JSR $C2F2	; #5
+$08/DB59: 60           RTS 
+
+;#5
+$08/C2F2: AD 02 20     LDA $2002	; clear
+$08/C2F5: A6 41        LDX $41		; X = $41 = offset
+
+$08/C2F7: BD 00 05     LDA $0500,X	; A = $0500 + X
+$08/C2FA: F0 30        BEQ $30 [$C32C]	; zero, exit
+$08/C2FC: 8D 06 20     STA $2006	; else, HI address
+$08/C2FF: E8           INX 
+$08/C300: BD 00 05     LDA $0500,X	; next byte, LO address
+$08/C303: 8D 06 20     STA $2006
+$08/C306: E8           INX 
+$08/C307: BD 00 05     LDA $0500,X	; next byte,
+$08/C30A: 29 7F        AND #$7F		; lower 7 bits
+$08/C30C: A8           TAY 		; into Y
+$08/C30D: BD 00 05     LDA $0500,X	; same byte again
+$08/C310: 10 06        BPL $06 [$C318]	; < 128?
+
+$08/C312: A5 20        LDA $20		; no, grab $20
+$08/C314: 09 04        ORA #$04		; draw vertical
+$08/C316: D0 04        BNE $04 [$C31C]  ; Always jump?
+
+$08/C318: A5 20        LDA $20		; yes, grab $20
+$08/C31A: 29 FB        AND #$FB		; draw horizontal
+
+$08/C31C: 8D 00 20     STA $2000	; set
+$08/C31F: E8           INX 
+
+$08/C320: BD 00 05     LDA $0500,X	; write next byte
+$08/C323: 8D 07 20     STA $2007
+$08/C326: E8           INX 
+$08/C327: 88           DEY 
+$08/C328: D0 F6        BNE $F6 [$C320]
+
+$08/C32A: F0 CB        BEQ $CB [$C2F7]
+
+$08/C32C: 86 41        STX $41
+$08/C32E: 60           RTS 
+
+
+===================================================
+                 HERE!!!!!!!!
+===================================================
+
+;called whenever switching back from screens
+$08/DEF3: A5 43        LDA $43
+$08/DEF5: 85 0D        STA $0D		; temp map Y
+$08/DEF7: A5 42        LDA $42
+$08/DEF9: 85 0F        STA $0F		; temp map X
+
+$08/DEFB: A9 0E        LDA #$0E
+$08/DEFD: 85 0C        STA $0C		;counter = 14 times
+
+$08/DEFF: A9 80        LDA #$80
+$08/DF01: 85 4A        STA $4A
+
+;loop
+$08/DF03: 20 4A DB     JSR $DB4A	; a lot of calls
+$08/DF06: C6 0C        DEC $0C		; decrement counter
+$08/DF08: 10 F9        BPL $F9 [$DF03]	;loop
+
+$08/DF0A: 4C 95 C1     JMP $C195	; set ROM page
+
+
+$08/DF0D: A5 43        LDA $43
+$08/DF0F: 85 0D        STA $0D
+$08/DF11: A5 42        LDA $42
+$08/DF13: 85 0F        STA $0F
+$08/DF15: A9 0E        LDA #$0E
+$08/DF17: 85 0C        STA $0C
+$08/DF19: A9 80        LDA #$80
+$08/DF1B: 85 4A        STA $4A
+
+$08/DF1D: 20 37 DB     JSR $DB37
+$08/DF20: C6 0C        DEC $0C
+$08/DF22: 10 F9        BPL $F9 [$DF1D]
+
+$08/DF24: 4C 95 C1     JMP $C195
+
+$08/DF27: A5 35        LDA $35
+$08/DF29: 48           PHA 
+$08/DF2A: 20 A3 E0     JSR $E0A3
+$08/DF2D: 20 00 80     JSR $8000
+$08/DF30: 20 7C DB     JSR $DB7C
+$08/DF33: 20 2E C4     JSR $C42E
+$08/DF36: 20 23 C4     JSR $C423
+$08/DF39: 20 03 C4     JSR $C403
+$08/DF3C: 20 DD C3     JSR $C3DD
+$08/DF3F: 20 44 F3     JSR $F344
+$08/DF42: 20 8A C4     JSR $C48A
+$08/DF45: 20 2D C1     JSR $C12D
+$08/DF48: 68           PLA 
+$08/DF49: 4C 7A C1     JMP $C17A
+
+$08/DF4C: A2 00        LDX #$00		; reset X
+
+
+;loop
+$08/DF4E: BD 65 E0     LDA $E065,X	; first byte 
+$08/DF51: C9 FF        CMP #$FF		; check 
+$08/DF53: F0 0F        BEQ $0F [$DF64]	; EOF? yes, exit
+$08/DF55: C5 43        CMP $43
+$08/DF57: D0 07        BNE $07 [$DF60]
+
+$08/DF59: BD 66 E0     LDA $E066,X
+$08/DF5C: C5 42        CMP $42
+$08/DF5E: F0 05        BEQ $05 [$DF65]
+
+$08/DF60: E8           INX 
+$08/DF61: E8           INX 		;read data by twos
+$08/DF62: D0 EA        BNE $EA [$DF4E]	;loop
+$08/DF64: 60           RTS 		;exit
+
+$08/DF65: E0 10        CPX #$10
+$08/DF67: B0 0A        BCS $0A [$DF73]
+$08/DF69: 8A           TXA 
+$08/DF6A: 4A           LSR 
+$08/DF6B: AA           TAX 		;X * 2
+$08/DF6C: BD 86 E0     LDA $E086,X
+$08/DF6F: 20 60 C4     JSR $C460
+$08/DF72: 60           RTS 
+
+
+$08/E065: 1A 0E 
+$08/E067: 13 0F 
+$08/E069: 13 03 
+$08/E06B: 0A 09 
+$08/E06D: 0F 19 
+$08/E06F: 02 18 
+$08/E071: 08 03 
+$08/E073: 0C 10 
+$08/E075: 02 02 
+$08/E077: 04 15 
+$08/E079: 18 11 
+$08/E07B: 00 13 
+$08/E07D: 11 1B 
+$08/E07F: 1C 02 
+$08/E081: 14 0A 
+$08/E083: 0B 03 
+$08/E085: FF 
+
+$08/E086: 05 06 
+$08/E088: 07 08 
+$08/E08A: 09 0A 
+$08/E08C: 14 15 
+$08/E08E: 21 AC 
+$08/E090: 05 46 
+$08/E092: 47 2A 
+$08/E094: 45 47 
+$08/E096: 21 EC 
+$08/E098: 09 43 
+$08/E09A: 2A 46 
+$08/E09C: 46 80 
+$08/E09E: 27 1E 
+$08/E0A0: 45 2D 
+$08/E0A2: FF 24 
+$08/E0A4: 52 30 
+$08/E0A6: 0A A5 
+$08/E0A8: BF C9 
+$08/E0AA: 09 D0 
+$08/E0AC: 04 A5 
+$08/E0AE: 55 F0 
+$08/E0B0: 04 A5 
+$08/E0B2: 55 D0 
+$08/E0B4: 01 60 
+$08/E0B6: C9 03 
+$08/E0B8: D0 22 
+$08/E0BA: A2 17 
+$08/E0BC: BD 18 
+$08/E0BE: 03 D0 
+$08/E0C0: 03 9D 
+$08/E0C2: 00 03 
+$08/E0C4: CA 10 
+$08/E0C6: F5 A5 
+$08/E0C8: D5 C9 
+$08/E0CA: 04 F0 
+$08/E0CC: 0D 24 
+$08/E0CE: 52 30 
+$08/E0D0: 09 24 
+$08/E0D2: 58 70 
+$08/E0D4: 05 A9 
+$08/E0D6: 09 20 
+$08/E0D8: AB C4 
+$08/E0DA: A5 55 
+$08/E0DC: C9 01 
+$08/E0DE: F0 0C 
+$08/E0E0: 38 E9 
+$08/E0E2: 01 85 
+$08/E0E4: 55 C9 
+$08/E0E6: 01 D0 
+$08/E0E8: 2E 20 
+$08/E0EA: 3C E1 
+$08/E0EC: A2 17 
+$08/E0EE: BD 00 
+$08/E0F0: 03 30 
+$08/E0F2: 24 CA 
+$08/E0F4: E0 07 
+$08/E0F6: D0 F6 
+$08/E0F8: A5 D6 
+$08/E0FA: D0 09 
+$08/E0FC: A5 D5 
+$08/E0FE: C5 D7 
+$08/E100: F0 03 
+$08/E102: 20 AB 
+$08/E104: C4 A5 
+$08/E106: 53 C9 
+$08/E108: 03 B0 
+$08/E10A: 07 A9 
+$08/E10C: 00 85 
+$08/E10E: 53 20 
+$08/E110: DB C1 
+$08/E112: A9 00 
+$08/E114: 85 55 
+$08/E116: 60 A5 
+$08/E118: 53 C9 
+$08/E11A: 03 B0 
+$08/E11C: 1A 24 
+$08/E11E: 52 30 
+$08/E120: 16 A5 
+$08/E122: 23 29 
+$08/E124: 07 D0 
+$08/E126: 10 A5 
+$08/E128: 23 29 
+$08/E12A: 18 4A 
+$08/E12C: 4A 4A 
+$08/E12E: A8 B9 
+$08/E130: 38 E1 
+$08/E132: 85 53 
+$08/E134: 20 DB 
+$08/E136: C1 60 
+$08/E138: 00 01 
+$08/E13A: 00 02 
+$08/E13C: A5 35 
+$08/E13E: 48 A9 
+$08/E140: 05 20 
+$08/E142: 7A C1 
+$08/E144: 20 09 
+$08/E146: 88 68 
+$08/E148: 4C 7A 
+$08/E14A: C1 A0 
+$08/E14C: 10 20 
+$08/E14E: 4D C6 
+$08/E150: A9 00 
+$08/E152: 85 C0 
+$08/E154: 20 53 
+$08/E156: C1 20 
+$08/E158: 64 C1 
+$08/E15A: 20 B1 
+$08/E15C: C2 20 
+$08/E15E: 90 C2 
+$08/E160: 20 94 
+$08/E162: C3 20 
+$08/E164: 9F C3 
+$08/E166: A9 12 
+$08/E168: 20 DB 
+$08/E16A: C1 A9 
+$08/E16C: 14 20 
+$08/E16E: C2 C1 
+$08/E170: A9 05 
+$08/E172: 85 42 
+$08/E174: A9 1F 
+$08/E176: 85 43 
+$08/E178: 20 1A 
+$08/E17A: C4 A5 
+$08/E17C: 20 09 
+$08/E17E: 01 85 
+$08/E180: 20 20 
+$08/E182: 2E E6 
+$08/E184: 20 6E 
+$08/E186: C1 20 
+$08/E188: 5D C1 
+$08/E18A: 20 B6 
+$08/E18C: D1 20 
+$08/E18E: 2D C1 
+$08/E190: A9 69 
+$08/E192: A0 04 
+$08/E194: 20 2E 
+$08/E196: C6 A9 
+$08/E198: 14 20 
+$08/E19A: B2 C6 
+$08/E19C: A9 7E 
+$08/E19E: 20 3F 
+$08/E1A0: C1 A0 
+$08/E1A2: 04 20 
+$08/E1A4: 0E C6 
+$08/E1A6: A9 2F 
+$08/E1A8: 20 AD 
+$08/E1AA: C4 A9 
+$08/E1AC: 00 85 
+$08/E1AE: B0 A2 
+$08/E1B0: 05 A4 
+$08/E1B2: B0 B9 
+$08/E1B4: 21 8E 
+$08/E1B6: 9D 80 
+$08/E1B8: 04 B9 
+$08/E1BA: 37 8E 
+$08/E1BC: 9D B0 
+$08/E1BE: 04 B9 
+$08/E1C0: 4D 8E 
+$08/E1C2: 20 EC 
+$08/E1C4: C3 E6 
+$08/E1C6: B0 A5 
+$08/E1C8: B0 C9 
+$08/E1CA: 0B F0 
+$08/E1CC: 1F C9 
+
+
+
+
+
+$08/DB4A: 20 27 D9     JSR $D927
+$08/DB4D: 20 1D D9     JSR $D91D
+$08/DB50: 20 E0 D9     JSR $D9E0
+$08/DB53: 20 C9 D9     JSR $D9C9
+$08/DB56: 20 F2 C2     JSR $C2F2
+$08/DB59: 60           RTS 
+
+
+
+
+
+
+; Vblank interrupt vector?
+$08/C000: A2 04        LDX #$04
+$08/C002: AD 02 20     LDA $2002
+$08/C005: 10 FB        BPL $FB [$C002]
+$08/C007: AD 02 20     LDA $2002
+$08/C00A: 30 FB        BMI $FB [$C007]
+$08/C00C: CA           DEX 
+$08/C00D: D0 F3        BNE $F3 [$C002]
+$08/C00F: A2 FF        LDX #$FF
+$08/C011: 9A           TXS 
+$08/C012: E8           INX 
+$08/C013: 8E 00 20     STX $2000
+$08/C016: 8E 01 20     STX $2001
+$08/C019: 86 21        STX $21
+$08/C01B: 8E 10 40     STX $4010
+$08/C01E: 8E 15 40     STX $4015
+$08/C021: 8E 16 40     STX $4016
+$08/C024: A9 C0        LDA #$C0
+$08/C026: 8D 17 40     STA $4017
+
+$08/C029: A9 80        LDA #$80
+$08/C02B: 8D FF EF     STA $EFFF
+$08/C02E: 8D FF BF     STA $BFFF
+$08/C031: 8D FF DF     STA $DFFF
+
+$08/C034: 20 F9 C1     JSR $C1F9
+$08/C037: 20 B1 C2     JSR $C2B1
+$08/C03A: 20 90 C2     JSR $C290
+$08/C03D: A2 00        LDX #$00
+$08/C03F: 8A           TXA 
+$08/C040: 9D 00 01     STA $0100,X
+$08/C043: E8           INX 
+$08/C044: D0 FA        BNE $FA [$C040]
+$08/C046: 20 52 C2     JSR $C252
+$08/C049: 20 9F C3     JSR $C39F
+$08/C04C: A9 90        LDA #$90
+$08/C04E: 8D 00 20     STA $2000
+$08/C051: 85 20        STA $20
+$08/C053: A9 1E        LDA #$1E
+$08/C055: 85 21        STA $21
+$08/C057: 8D 01 20     STA $2001
+$08/C05A: A9 01        LDA #$01
+$08/C05C: 85 32        STA $32
+$08/C05E: A9 C3        LDA #$C3
+$08/C060: 85 31        STA $31
+$08/C062: 4C 9A DD     JMP $DD9A
+
+$08/C081: 48           PHA 
+$08/C082: 98           TYA 
+$08/C083: 48           PHA 
+$08/C084: 8A           TXA 
+$08/C085: 48           PHA 
+$08/C086: A5 22        LDA $22
+$08/C088: D0 03        BNE $03 [$C08D]
+$08/C08A: 4C E2 C0     JMP $C0E2
+$08/C08D: A5 20        LDA $20
+$08/C08F: 29 7F        AND #$7F
+$08/C091: 85 20        STA $20
+$08/C093: 8D 00 20     STA $2000
+$08/C096: A5 21        LDA $21
+$08/C098: 29 E6        AND #$E6
+$08/C09A: 8D 01 20     STA $2001
+$08/C09D: A9 00        LDA #$00
+$08/C09F: 8D 03 20     STA $2003
+$08/C0A2: A9 02        LDA #$02
+$08/C0A4: 8D 14 40     STA $4014
+$08/C0A7: A5 30        LDA $30
+$08/C0A9: F0 03        BEQ $03 [$C0AE]
+$08/C0AB: 20 CD C4     JSR $C4CD
+$08/C0AE: A5 34        LDA $34
+$08/C0B0: F0 03        BEQ $03 [$C0B5]
+$08/C0B2: 20 2F C3     JSR $C32F
+$08/C0B5: 20 F2 C2     JSR $C2F2
+$08/C0B8: AD 02 20     LDA $2002
+$08/C0BB: A5 25        LDA $25
+$08/C0BD: 8D 05 20     STA $2005
+$08/C0C0: A5 24        LDA $24
+$08/C0C2: 8D 05 20     STA $2005
+$08/C0C5: A5 21        LDA $21
+$08/C0C7: 8D 01 20     STA $2001
+$08/C0CA: A2 00        LDX #$00
+$08/C0CC: 86 22        STX $22
+$08/C0CE: E6 23        INC $23
+$08/C0D0: 20 0F C2     JSR $C20F
+$08/C0D3: A5 20        LDA $20
+$08/C0D5: 09 90        ORA #$90
+$08/C0D7: 85 20        STA $20
+$08/C0D9: 8D 00 20     STA $2000
+$08/C0DC: 20 C5 C1     JSR $C1C5
+$08/C0DF: 20 DE C1     JSR $C1DE
+$08/C0E2: A5 36        LDA $36
+$08/C0E4: F0 05        BEQ $05 [$C0EB]
+$08/C0E6: E6 A9        INC $A9
+$08/C0E8: 4C EE C0     JMP $C0EE
+$08/C0EB: 20 F5 C0     JSR $C0F5
+$08/C0EE: 68           PLA 
+$08/C0EF: AA           TAX 
+$08/C0F0: 68           PLA 
+$08/C0F1: A8           TAY 
+$08/C0F2: 68           PLA 
+$08/C0F3: 28           PLP 
+$08/C0F4: 40           RTI 
+
+==============================================================
+while moving between maps
+==============================================================
+
+$08/DB5A: A5 35        LDA $35
+$08/DB5C: 48           PHA 
+$08/DB5D: A5 42        LDA $42
+$08/DB5F: A6 43        LDX $43
+$08/DB61: A0 03        LDY #$03
+$08/DB63: 85 0F        STA $0F
+$08/DB65: 84 0C        STY $0C
+$08/DB67: 86 0D        STX $0D
+$08/DB69: A9 80        LDA #$80
+$08/DB6B: 85 4A        STA $4A
+
+$08/DB6D: 20 37 DB     JSR $DB37
+$08/DB70: C6 0C        DEC $0C
+$08/DB72: 10 F9        BPL $F9 [$DB6D]
+
+$08/DB74: 68           PLA 
+$08/DB75: 4C 7A C1     JMP $C17A
+
+
+$08/DB37: 20 27 D9     JSR $D927
+$08/DB3A: 20 1D D9     JSR $D91D
+$08/DB3D: 20 2D C1     JSR $C12D
+$08/DB40: 20 E0 D9     JSR $D9E0
+$08/DB43: 20 C9 D9     JSR $D9C9
+$08/DB46: 20 2D C1     JSR $C12D
+$08/DB49: 60           RTS 
